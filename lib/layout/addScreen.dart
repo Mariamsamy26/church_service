@@ -1,4 +1,4 @@
-import 'dart:core';
+import 'package:intl/intl.dart';
 import 'package:church/shared/firebase/firebase_function.dart';
 import 'package:church/shared/style/color_manager.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,6 @@ class _AddScreenState extends State<AddScreen> {
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  // Define variables to hold selected values for level and gender
   String? selectedLevel;
   String? selectedGender;
 
@@ -71,23 +70,28 @@ class _AddScreenState extends State<AddScreen> {
                       AppTextFormField(
                         controller: bDayController,
                         suffixIcon: IconButton(
-                            onPressed: ()  async {
-                                DateTime? chosenDate = await showDatePicker(
-                                  context: context,
-                                  firstDate: DateTime(1-1-2000), // Start from the year 2000
-                                  lastDate: DateTime(2024),
-                                );
-                                if (chosenDate != null) {
-                                  selectedDate = chosenDate;
-                                  setState(() {});
-                                }
-                              }
-                            , icon: Icon(
-                            Icons.calendar_month_sharp)),
-                        hintText: "تاريخ الميلاد ",
+                          onPressed: () async {
+                            DateTime? chosenDate = await showDatePicker(
+                              context: context,
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime.now(),
+                              initialDate: selectedDate ?? DateTime.now(),
+                            );
+                            if (chosenDate != null) {
+                              selectedDate = chosenDate;
+
+                              String formattedDate = DateFormat('d / MM /yyyy').format(chosenDate);
+
+                              bDayController.text = formattedDate;
+                              setState(() {});
+                            }
+                          },
+                          icon: Icon(Icons.calendar_month_sharp),
+                        ),
+                        hintText: "تاريخ الميلاد",
                         validator: (text) {
                           if (text?.isEmpty ?? true) {
-                            return "اكتب تاريخ الميلاد ";
+                            return "اكتب تاريخ الميلاد";
                           }
                           return null;
                         },
@@ -100,6 +104,7 @@ class _AddScreenState extends State<AddScreen> {
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         label: 'تاريخ الميلاد',
+                        readOnly: true,
                       ),
                       const SizedBox(height: 25),
 
@@ -107,7 +112,7 @@ class _AddScreenState extends State<AddScreen> {
                         value: selectedLevel,
                         items: DataApp.level.map((String level) {
                           return DropdownMenuItem<String>(
-                            value: level, // Use the level as the value
+                            value: level,
                             child: Text(level),
                           );
                         }).toList(),
@@ -115,11 +120,7 @@ class _AddScreenState extends State<AddScreen> {
                           setState(() {
                             selectedLevel = value;
 
-                            // Find the index of the selected value in the DataApp.level list
-                            int selectedIndex = DataApp.level.indexOf(value!) +
-                                1; // Add 1 to the index
-
-                            // Print the index to verify (you can use it as needed)
+                            int selectedIndex = DataApp.level.indexOf(value!) + 1;
                             print("Selected index: $selectedIndex");
                           });
                         },
@@ -221,7 +222,6 @@ class _AddScreenState extends State<AddScreen> {
                                       ? "B"
                                       : "G";
 
-                                  // Use selectedIndex instead of parsing selectedLevel
                                   int levelIndex = DataApp.level.indexOf(
                                       selectedLevel!) + 1;
 
