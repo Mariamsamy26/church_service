@@ -16,6 +16,7 @@ class AppTextFormField extends StatelessWidget {
   final Color? backgroundColor;
   final TextEditingController? controller;
   final Function(String?) validator;
+  final bool readOnly;
 
   const AppTextFormField({
     super.key,
@@ -32,37 +33,38 @@ class AppTextFormField extends StatelessWidget {
     required this.validator,
     this.prefixIcon,
     required this.label,
+    this.readOnly = false,
   });
-
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: readOnly,
       textAlign: TextAlign.right,
       // Apply text alignment for the input text
       decoration: InputDecoration(
         labelText: label,
         labelStyle: FontForm.TextStyle30bold.copyWith(
-            backgroundColor: ColorManager.colorWhit),
+            backgroundColor: ColorManager.colorWhit
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,  // هذا السطر يثبت الـ label فوق الحقل
         isDense: false,
         contentPadding: contentPadding ??
             const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        focusedBorder: focusedBorder ??
-            OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Colors.white,
-                width: 1.3,
-              ),
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-        enabledBorder: enabledBorder ??
-            OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Colors.white,
-                width: 1.3,
-              ),
-              borderRadius: BorderRadius.circular(12.0),
-            ),
+        focusedBorder: focusedBorder ?? OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.white,
+            width: 1.3,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        enabledBorder: enabledBorder ?? OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.white,
+            width: 1.3,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
         errorBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             color: Colors.red,

@@ -6,23 +6,16 @@ class FirebaseService {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // دالة لإضافة بيانات الطفل إلى Firebase
   Future<void> addChildData(ChildData childData) async {
     try {
-      // بناء اسم المجموعة بناءً على المستوى والجنس
       String collectionName = 'Level_${childData.level}_${childData.gender}';
-
-      // إضافة الطفل إلى Firestore في المجموعة المناسبة
-      await _firestore.collection(collectionName).add(childData.toJson());
-
-      print('Child data added to $collectionName');
+      var docRef = await _firestore.collection(collectionName).add(childData.toJson());
+      print('Child data added to $collectionName with id: ${docRef.id}');
     } catch (e) {
       print('Error adding child data: $e');
     }
   }
 
-
-  // دالة لحذف كل البيانات في مجموعة معينة بناءً على المستوى والجنس
   Future<void> clearCollectionByLevelAndGender(int level, String gender) async {
     try {
       String collectionName = 'Level_${level}_${gender}';
@@ -48,20 +41,17 @@ class FirebaseService {
     ChildData newAccount = ChildData(
       name: name,
       bDay: bDay,
-      level: level ,  // التأكد من تحويل المستوى إلى عدد صحيح
+      level: level,
       gender: gender,
       notes: notes,
       imgUrl: 'https://example.com/profile.jpg',
       att: [],
-      id: '',  // يمكن أن تكون فارغة أو تم توليدها لاحقًا
+      id: '',
     );
 
-    // إضافة البيانات إلى Firebase
-    addChildData(newAccount);  // استخدم دالة addChildData بدلاً من addAccountData
+    addChildData(newAccount);
   }
 
-
-  // إضافة الطفل إلى الـ Map
   void addChild(ChildData child) {
     if (!childrenByLevel.containsKey(child.level)) {
       childrenByLevel[child.level] = [];
@@ -69,12 +59,10 @@ class FirebaseService {
     childrenByLevel[child.level]?.add(child);
   }
 
-  // جلب الأطفال حسب المستوى
   List<ChildData>? getChildrenByLevel(int level) {
     return childrenByLevel[level];
   }
 
-  // جلب جميع الأطفال
   List<ChildData>? getAllChildren() {
     List<ChildData> allChildren = [];
     for (var childrenList in childrenByLevel.values) {
@@ -83,7 +71,6 @@ class FirebaseService {
     return allChildren;
   }
 
-  // جلب الأطفال من Firestore
   Future<List<ChildData>> getChildrenFromFirestore() async {
     List<ChildData> childrenList = [];
 

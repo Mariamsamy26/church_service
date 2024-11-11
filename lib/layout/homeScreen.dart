@@ -26,9 +26,7 @@ class _HomescreenState extends State<Homescreen> {
           iconApp: Icons.add,
           onPressedApp: () {
             Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => AddScreen()
-              ),
+              MaterialPageRoute(builder: (context) => AddScreen()),
             );
           },
         ),
@@ -49,15 +47,18 @@ class _HomescreenState extends State<Homescreen> {
                   CustomIconBottom(
                     text: DataApp.level[i],
                     OnPressed: () async {
-                      String? gender = await showDialog<String>(
+                      showDialog<String>(
                         context: context,
-                        builder: (BuildContext context) => CustemshowDialog(),
+                        builder: (BuildContext context) => CustomShowDialog(
+                          title: 'gender . . .',
+                          firstText: DataApp.genter[0],
+                          secondText: DataApp.genter[1],
+                          frisIcon: Icons.girl_outlined,
+                          secIcon: Icons.boy_outlined,
+                          onFirstPressed: () {selectedGender="G";},
+                          onSecondPressed: () {selectedGender="B";},
+                        ),
                       );
-
-                      if (gender != null && gender.isNotEmpty) {
-                        setState(() {
-                          selectedGender = gender;
-                        });
 
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -68,9 +69,8 @@ class _HomescreenState extends State<Homescreen> {
                             ),
                           ),
                         );
-                      }
-                    },
-                    radius: 5,
+                      },
+
                     width: 300,
                     heightIcon: 150,
                     widthIcon: 150,
