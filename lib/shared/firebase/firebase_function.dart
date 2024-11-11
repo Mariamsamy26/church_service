@@ -10,7 +10,8 @@ class FirebaseService {
     try {
       String collectionName = 'Level_${childData.level}_${childData.gender}';
       var docRef = await _firestore.collection(collectionName).add(childData.toJson());
-      print('Child data added to $collectionName with id: ${docRef.id}');
+      childData.id = docRef.id;  // Firebase generates the ID and assigns it to childData
+      print('Child data added with id: ${childData.id}');
     } catch (e) {
       print('Error adding child data: $e');
     }
@@ -44,13 +45,14 @@ class FirebaseService {
       level: level,
       gender: gender,
       notes: notes,
-      imgUrl: 'https://example.com/profile.jpg',
-      att: [],
-      id: '',
+      imgUrl: 'https://example.com/profile.jpg', // Replace with dynamic image URL if needed
+      att: [], // Empty array for attendance (you can update it later)
+      id: '', // Leave empty as Firestore will generate it
     );
 
     addChildData(newAccount);
   }
+
 
   void addChild(ChildData child) {
     if (!childrenByLevel.containsKey(child.level)) {

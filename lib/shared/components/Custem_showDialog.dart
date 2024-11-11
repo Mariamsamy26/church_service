@@ -1,34 +1,54 @@
 import 'package:flutter/material.dart';
 import 'Custom_ElevatedAccountFill.dart';
 
-class CustemshowDialog extends StatelessWidget {
-  const CustemshowDialog({Key? key}) : super(key: key);
+class CustomShowDialog extends StatelessWidget {
+  final String title;
+  final String firstText;
+  final String secondText;
+  final IconData frisIcon;
+  final IconData secIcon;
+  final VoidCallback? onFirstPressed;
+  final VoidCallback? onSecondPressed;
+  final VoidCallback? onCancelPressed;
+
+  const CustomShowDialog({
+    Key? key,
+    required this.title,
+    required this.firstText,
+    required this.secondText,
+    required this.frisIcon,
+    required this.secIcon,
+    this.onFirstPressed,
+    this.onSecondPressed,
+    this.onCancelPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      title: Text(title),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'gender . . . ',
+            title,
             style: TextStyle(fontSize: 20),
           ),
           SizedBox(height: 25),
           CustomElevatedAccountFill(
-            icon: Icons.girl_outlined,
-            text: 'بنت',
-            onPressed: () {
+            icon: frisIcon,
+            text: firstText,
+            onPressed: onFirstPressed ?? () {
               Navigator.of(context).pop('G');
             },
             dividerColor: Colors.transparent,
           ),
           SizedBox(height: 5),
           CustomElevatedAccountFill(
-            icon: Icons.boy_outlined,
-            text: 'ولد',
-            onPressed: () {
+            icon: secIcon,
+            text: secondText,
+            onPressed: onSecondPressed ?? () {
               Navigator.of(context).pop('B');
             },
             dividerColor: Colors.transparent,
@@ -37,11 +57,11 @@ class CustemshowDialog extends StatelessWidget {
             children: [
               Spacer(),
               InkWell(
-                onTap: () {
+                onTap: onCancelPressed ?? () {
                   Navigator.of(context).pop();
                 },
                 child: Text(
-                  'الغاء',
+                  'إلغاء',
                   style: TextStyle(fontSize: 14),
                 ),
               ),

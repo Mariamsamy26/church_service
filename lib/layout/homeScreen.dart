@@ -59,17 +59,7 @@ class _HomescreenState extends State<Homescreen> {
                           onSecondPressed: () {selectedGender="B";},
                         ),
                       );
-
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => LeverScreen(
-                              textLevel: DataApp.level[i],
-                              level: i + 1,
-                              genter: selectedGender,
-                            ),
-                          ),
-                        );
-                      },
+                    },
 
                     width: 300,
                     heightIcon: 150,
