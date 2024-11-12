@@ -65,46 +65,64 @@ class _AddScreenState extends State<AddScreen> {
                       ),
                       const SizedBox(height: 25),
 
-                      AppTextFormField(
-                        controller: bDayController,
-                        suffixIcon: IconButton(
-                          onPressed: () async {
-                            DateTime? chosenDate = await showDatePicker(
-                              context: context,
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime.now(),
-                              initialDate: selectedDate,
-                            );
-                            if (chosenDate != null) {
-                              selectedDate = chosenDate;
-
-                              // Adjusted format to remove spaces around '/'
-                              String formattedDate = DateFormat('dd/MM/yyyy').format(chosenDate);
-
-                              bDayController.text = formattedDate;
-                              setState(() {});
-                            }
-                          },
-                          icon: Icon(Icons.calendar_month_sharp),
-                        ),
-                        hintText: "تاريخ الميلاد",
-                        validator: (text) {
-                          if (text?.isEmpty ?? true) {
-                            return "اكتب تاريخ الميلاد";
+                    AppTextFormField(
+                      controller: bDayController,
+                      suffixIcon:
+                      IconButton(
+                        onPressed: () async {
+                          DateTime? chosenDate = await showDatePicker(
+                            context: context,
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime.now(),
+                            initialDate: selectedDate,
+                            builder: (BuildContext context, Widget? child) {
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: ColorScheme.light(
+                                    primary: ColorManager.liteblueGray,
+                                    onSurface: ColorManager.scondeColor,
+                                  ),
+                                  textButtonTheme: TextButtonThemeData(
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: ColorManager.liteblueGray,
+                                    ),
+                                  ),
+                                ),
+                                child: child!,
+                              );
+                            },
+                          );
+                          if (chosenDate != null) {
+                            selectedDate = chosenDate;
+                            String formattedDate = DateFormat('dd/MM/yyyy').format(chosenDate);
+                            bDayController.text = formattedDate;
+                            setState(() {}); // Update the UI if necessary
                           }
-                          return null;
                         },
-                        backgroundColor: ColorManager.colorWhit,
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: ColorManager.primaryColor,
-                            width: 1.3,
-                          ),
-                          borderRadius: BorderRadius.circular(12.0),
+                        icon: Icon(
+                          Icons.calendar_month_sharp,
+                          color: ColorManager.scondeColor, // Set the icon color
                         ),
-                        label: 'تاريخ الميلاد',
-                        readOnly: true,
                       ),
+                      hintText: "تاريخ الميلاد",
+                      validator: (text) {
+                        if (text?.isEmpty ?? true) {
+                          return "اكتب تاريخ الميلاد";
+                        }
+                        return null;
+                      },
+                      backgroundColor: ColorManager.colorWhit,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: ColorManager.primaryColor,
+                          width: 1.3,
+                        ),
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      label: 'تاريخ الميلاد',
+                      readOnly: true,
+                    ),
+                     //BD
                       const SizedBox(height: 25),
 
                       CustomDropdownButtonFormField(
@@ -186,17 +204,23 @@ class _AddScreenState extends State<AddScreen> {
                               text: 'حفظ',
                               OnPressed: () async {
                                 if (formKey.currentState!.validate()) {
-                                  if (selectedLevel == null || selectedGender == null) {
+                                  if (selectedLevel == null ||
+                                      selectedGender == null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('الرجاء اختيار المستوى والجنس')),
+                                      SnackBar(
+                                          content: Text(
+                                              'الرجاء اختيار المستوى والجنس')),
                                     );
                                     return;
                                   }
 
-                                  DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(bDayController.text);
+                                  DateTime parsedDate = DateFormat('dd/MM/yyyy')
+                                      .parse(bDayController.text);
 
-                                  String genderCode = selectedGender == "ولد" ? "B" : "G";
-                                  int levelIndex = DataApp.level.indexOf(selectedLevel!);
+                                  String genderCode =
+                                      selectedGender == "ولد" ? "B" : "G";
+                                  int levelIndex =
+                                      DataApp.level.indexOf(selectedLevel!);
 
                                   await FirebaseService().saveChildData(
                                     name: nameController.text,
