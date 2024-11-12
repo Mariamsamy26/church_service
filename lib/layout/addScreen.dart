@@ -2,7 +2,8 @@ import 'package:intl/intl.dart';
 import 'package:church/shared/firebase/firebase_function.dart';
 import 'package:church/shared/style/color_manager.dart';
 import 'package:flutter/material.dart';
-import '../shared/components/Custom_ElevatedButton.dart';
+import '../shared/components/custom_DropdownButtonFormField.dart';
+import '../shared/components/custom_ElevatedButton.dart';
 import '../shared/components/text_form_field.dart';
 import '../shared/dataApp.dart';
 
@@ -33,9 +34,7 @@ class _AddScreenState extends State<AddScreen> {
               fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity,
-            ),
-            Container(
-              color: Colors.white30,
+
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -80,7 +79,8 @@ class _AddScreenState extends State<AddScreen> {
                             if (chosenDate != null) {
                               selectedDate = chosenDate;
 
-                              String formattedDate = DateFormat('d / MM /yyyy').format(chosenDate);
+                              String formattedDate =
+                                  DateFormat('d / MM /yyyy').format(chosenDate);
 
                               bDayController.text = formattedDate;
                               setState(() {});
@@ -108,34 +108,18 @@ class _AddScreenState extends State<AddScreen> {
                       ),
                       const SizedBox(height: 25),
 
-                      DropdownButtonFormField<String>(
-                        value: selectedLevel,
-                        items: DataApp.level.map((String level) {
-                          return DropdownMenuItem<String>(
-                            value: level,
-                            child: Text(level),
-                          );
-                        }).toList(),
+                      CustomDropdownButtonFormField(
+                        width: double.infinity,
+                        selectedValue: selectedLevel,
+                        items: DataApp.level,
+                        labelText: 'المستوى',
                         onChanged: (String? value) {
                           setState(() {
                             selectedLevel = value;
-
                             int selectedIndex = DataApp.level.indexOf(value!) + 1;
                             print("Selected index: $selectedIndex");
                           });
                         },
-                        decoration: InputDecoration(
-                          labelText: 'المستوى',
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: ColorManager.primaryColor,
-                              width: 1.3,
-                            ),
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          fillColor: ColorManager.colorWhit,
-                          filled: true,
-                        ),
                         validator: (String? value) {
                           if (value == null || value.isEmpty) {
                             return "الرجاء اختيار المستوى";
@@ -143,35 +127,23 @@ class _AddScreenState extends State<AddScreen> {
                           return null;
                         },
                       ),
-
                       const SizedBox(height: 25),
 
-                      DropdownButtonFormField<String>(
-                        value: selectedGender,
-                        items: DataApp.genter.map((gender) {
-                          return DropdownMenuItem<String>(
-                              value: gender, child: Text(gender));
-                        }).toList(),
-                        onChanged: (value) {
+                      CustomDropdownButtonFormField(
+                        width: double.infinity,
+                        selectedValue: selectedGender,
+                        items: DataApp.genter,
+                        labelText: 'الجنس',
+                        onChanged: (String? value) {
                           setState(() {
                             selectedGender = value;
+                            int selectedIndex = DataApp.genter.indexOf(value!) ;
+                            print("Selected index: $selectedIndex");
                           });
                         },
-                        decoration: InputDecoration(
-                          labelText: 'الجنس',
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: ColorManager.primaryColor,
-                              width: 1.3,
-                            ),
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          fillColor: ColorManager.colorWhit,
-                          filled: true,
-                        ),
-                        validator: (value) {
+                        validator: (String? value) {
                           if (value == null || value.isEmpty) {
-                            return "الرجاء اختيار الجنس";
+                            return "الجنس";
                           }
                           return null;
                         },
@@ -216,26 +188,24 @@ class _AddScreenState extends State<AddScreen> {
                               colorButton: ColorManager.primaryColor,
                               colorText: ColorManager.colorWhit,
                               text: 'حفظ',
-                              OnPressed: () {
-                                if (formKey.currentState!.validate()) {
-                                  String genderCode = selectedGender == "ولد"
-                                      ? "B"
-                                      : "G";
+                                OnPressed: () async {
+                                  if (formKey.currentState!.validate()) {
+                                    String genderCode = selectedGender == "ولد" ? "B" : "G";
+                                    int levelIndex = DataApp.genter.indexOf(selectedGender!) ;
 
-                                  int levelIndex = DataApp.level.indexOf(
-                                      selectedLevel!) + 1;
+                                    // Await the result of saveChildData
+                                    await FirebaseService().saveChildData(
+                                      name: nameController.text,
+                                      bDay: bDayController.text,
+                                      level: levelIndex,
+                                      gender: genderCode,
+                                      notes: notesController.text,
+                                    );
 
-                                  FirebaseService().saveChildtData(
-                                    name: nameController.text,
-                                    bDay: bDayController.text,
-                                    level: levelIndex,
-                                    gender: genderCode,
-                                    notes: notesController.text,
-                                  );
-
-                                  Navigator.pop(context);
+                                    // After the ID is set and saved, pop the context
+                                    Navigator.pop(context);
+                                  }
                                 }
-                              },
                             ),
                           ),
                         ],

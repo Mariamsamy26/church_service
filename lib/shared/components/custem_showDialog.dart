@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Custom_ElevatedAccountFill.dart';
+import 'custom_ElevatedAccountFill.dart';
 
 class CustomShowDialog extends StatelessWidget {
   final String title;
@@ -18,8 +18,8 @@ class CustomShowDialog extends StatelessWidget {
     required this.secondText,
     required this.frisIcon,
     required this.secIcon,
-    this.onFirstPressed,
-    this.onSecondPressed,
+    required this.onFirstPressed,
+    required this.onSecondPressed,
     this.onCancelPressed,
   }) : super(key: key);
 
@@ -31,35 +31,33 @@ class CustomShowDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            title,
-            style: TextStyle(fontSize: 20),
-          ),
-          SizedBox(height: 25),
           CustomElevatedAccountFill(
             icon: frisIcon,
             text: firstText,
-            onPressed: onFirstPressed ?? () {
-              Navigator.of(context).pop('G');
-            },
+            onPressed: onFirstPressed ??
+                () {
+                  Navigator.of(context).pop('G');
+                },
             dividerColor: Colors.transparent,
           ),
           SizedBox(height: 5),
           CustomElevatedAccountFill(
             icon: secIcon,
             text: secondText,
-            onPressed: onSecondPressed ?? () {
-              Navigator.of(context).pop('B');
-            },
+            onPressed: onSecondPressed ??
+                () {
+                  Navigator.of(context).pop('B');
+                },
             dividerColor: Colors.transparent,
           ),
           Row(
             children: [
               Spacer(),
               InkWell(
-                onTap: onCancelPressed ?? () {
-                  Navigator.of(context).pop();
-                },
+                onTap: onCancelPressed ??
+                    () {
+                      Navigator.of(context).pop();
+                    },
                 child: Text(
                   'إلغاء',
                   style: TextStyle(fontSize: 14),
