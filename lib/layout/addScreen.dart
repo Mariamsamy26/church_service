@@ -34,7 +34,6 @@ class _AddScreenState extends State<AddScreen> {
               fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity,
-
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -74,13 +73,13 @@ class _AddScreenState extends State<AddScreen> {
                               context: context,
                               firstDate: DateTime(2000),
                               lastDate: DateTime.now(),
-                              initialDate: selectedDate ?? DateTime.now(),
+                              initialDate: selectedDate,
                             );
                             if (chosenDate != null) {
                               selectedDate = chosenDate;
 
-                              String formattedDate =
-                                  DateFormat('d / MM /yyyy').format(chosenDate);
+                              // Adjusted format to remove spaces around '/'
+                              String formattedDate = DateFormat('dd/MM/yyyy').format(chosenDate);
 
                               bDayController.text = formattedDate;
                               setState(() {});
@@ -116,8 +115,6 @@ class _AddScreenState extends State<AddScreen> {
                         onChanged: (String? value) {
                           setState(() {
                             selectedLevel = value;
-                            int selectedIndex = DataApp.level.indexOf(value!) + 1;
-                            print("Selected index: $selectedIndex");
                           });
                         },
                         validator: (String? value) {
@@ -137,8 +134,6 @@ class _AddScreenState extends State<AddScreen> {
                         onChanged: (String? value) {
                           setState(() {
                             selectedGender = value;
-                            int selectedIndex = DataApp.genter.indexOf(value!) ;
-                            print("Selected index: $selectedIndex");
                           });
                         },
                         validator: (String? value) {
@@ -165,6 +160,7 @@ class _AddScreenState extends State<AddScreen> {
                         label: 'ملاحظات',
                       ),
                       const SizedBox(height: 25),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -188,24 +184,31 @@ class _AddScreenState extends State<AddScreen> {
                               colorButton: ColorManager.primaryColor,
                               colorText: ColorManager.colorWhit,
                               text: 'حفظ',
-                                OnPressed: () async {
-                                  if (formKey.currentState!.validate()) {
-                                    String genderCode = selectedGender == "ولد" ? "B" : "G";
-                                    int levelIndex = DataApp.genter.indexOf(selectedGender!) ;
-
-                                    // Await the result of saveChildData
-                                    await FirebaseService().saveChildData(
-                                      name: nameController.text,
-                                      bDay: bDayController.text,
-                                      level: levelIndex,
-                                      gender: genderCode,
-                                      notes: notesController.text,
+                              OnPressed: () async {
+                                if (formKey.currentState!.validate()) {
+                                  if (selectedLevel == null || selectedGender == null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('الرجاء اختيار المستوى والجنس')),
                                     );
-
-                                    // After the ID is set and saved, pop the context
-                                    Navigator.pop(context);
+                                    return;
                                   }
+
+                                  DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(bDayController.text);
+
+                                  String genderCode = selectedGender == "ولد" ? "B" : "G";
+                                  int levelIndex = DataApp.level.indexOf(selectedLevel!);
+
+                                  await FirebaseService().saveChildData(
+                                    name: nameController.text,
+                                    bDay: parsedDate,
+                                    level: levelIndex + 1,
+                                    gender: genderCode,
+                                    notes: notesController.text,
+                                  );
+
+                                  Navigator.pop(context);
                                 }
+                              },
                             ),
                           ),
                         ],

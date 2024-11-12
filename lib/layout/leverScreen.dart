@@ -1,22 +1,23 @@
-import 'package:church/shared/style/fontForm.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:church/shared/style/fontForm.dart';
 
 import '../shared/components/appBar.dart';
-import '../shared/components/custom_DropdownButtonFormField.dart';
-import '../shared/dataApp.dart';
+import '../shared/components/custom_Card.dart';
 import 'infoScreen.dart';
 import '../shared/firebase/firebase_function.dart';
-import 'leveles/FiltersBar.dart'; // إضافة استيراد FirebaseService
+import 'leveles/FiltersBar.dart';
 
 class LeverScreen extends StatefulWidget {
   final int level;
   final String textLevel;
-  final String genter;
+  final String gender;
 
-  LeverScreen({
+  const LeverScreen({
+    super.key,
     required this.level,
     required this.textLevel,
-    required this.genter,
+    required this.gender,
   });
 
   @override
@@ -24,7 +25,8 @@ class LeverScreen extends StatefulWidget {
 }
 
 class _LeverScreenState extends State<LeverScreen> {
-  get selectedMonths => null;
+  String selectedMonths = "0";
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -32,103 +34,94 @@ class _LeverScreenState extends State<LeverScreen> {
       appBar: AppbarCom(
         textAPP: widget.textLevel,
         iconApp:
-        widget.genter == "B" ? Icons.boy_outlined : Icons.girl_outlined,
+            widget.gender == "B" ? Icons.boy_outlined : Icons.girl_outlined,
         onPressedApp: () {},
       ),
-      body: StreamBuilder(
-        stream: FirebaseService()
-            .getChildrenByLevelAndGender(widget.level, widget.genter),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text("Something went wrong"),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {});
-                    },
-                    child: Text("Try again"),
+      body: ListView(
+        children: [
+          FiltersBar(
+            onMonthChanged: (month) {
+              setState(() {
+                selectedMonths = month ?? '0';
+              });
+            },
+          ),
+          StreamBuilder(
+            stream: selectedMonths == '0'
+                ? FirebaseService()
+                    .getChildrenByLevelAndGender(widget.level, widget.gender)
+                : FirebaseService().bDChildrenByLevelAndGender(
+                    level: widget.level,
+                    gender: widget.gender,
+                    monthStr: selectedMonths,
+                    firestore: _firestore,
                   ),
-                ],
-              ),
-            );
-          }
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
 
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
-              child: Text(
-                "No children data available",
-                style: FontForm.TextStyle50bold,
-              ),
-            );
-          }
-
-          var childrenData = snapshot.data;
-
-          return Column(
-            children: [
-               FiltersBar(),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: childrenData?.length,
-                  itemBuilder: (context, index) {
-                    var child = childrenData?[index];
-                    return Card(
-                      clipBehavior: Clip.antiAlias,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+              if (snapshot.hasError) {
+                return Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Something went wrong "),
+                      ElevatedButton(
+                        onPressed: () {
+                          print("kkk$snapshot.hasError");
+                          setState(() {});
+                        },
+                        child: Text("Try again"),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListTile(
-                          leading: widget.genter == 'G'
-                              ? Image.asset(
-                            'assets/images/profileG.png',
-                            width: 70,
-                            height: 70,
-                          )
-                              : Image.asset(
-                            'assets/images/profileB.png',
-                            width: 70,
-                            height: 70,
+                    ],
+                  ),
+                );
+              }
+
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(
+                  child: Text(
+                    "No children data available",
+                    style: FontForm.TextStyle50bold,
+                  ),
+                );
+              }
+
+              var childrenData = snapshot.data;
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: childrenData?.length,
+                itemBuilder: (context, index) {
+                  var child = childrenData?[index];
+                  return CustomCard(
+                      profileImage: widget.gender == 'G'
+                          ? 'assets/images/profileG.png'
+                          : 'assets/images/profileB.png',
+                      // profileImage: child!.imgUrl ==
+                      //     "https://example.com/default_profile.jpg"
+                      //     ? (widget.gender == 'B'
+                      //     ? 'assets/images/profileB.png'
+                      //     : 'assets/images/profileG.png')
+                      //     : (child.imgUrl ?? 'default_image_path'),
+                      name: child!.name!,
+                      birthDate: (child.bDay ?? "d/m/20--").toString(),
+                      id: child.id ?? "N/A",
+                      icon: Icons.info_rounded,
+                      iconFunction: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => InfoScreen(child.id ?? "N/A"),
                           ),
-                          title: Text(
-                            child!.name!, // استخدام الاسم من البيانات
-                            style: FontForm.TextStyle30bold,
-                          ),
-                          subtitle: Text(
-                            (child!.bDay!).toString(),
-                            // استخدام تاريخ الميلاد من البيانات
-                            style: FontForm.TextStyle20bold,
-                          ),
-                          trailing: IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => InfoScreen(child.id ?? "22"), // إرسال ID الطفل
-                                ),
-                              );
-                            },
-                            icon: Icon(
-                              Icons.info_rounded,
-                              size: 30,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
-        },
+                        );
+                      });
+                },
+              );
+            },
+          ),
+        ],
       ),
     );
   }

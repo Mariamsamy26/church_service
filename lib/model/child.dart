@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ChildData {
   String? id;
   String? name;
-  String? bDay;
+  DateTime? bDay;
   int level;
   String gender;
   String notes;
@@ -19,38 +21,39 @@ class ChildData {
     required this.att,
   });
 
+  // Constructor for initializing from JSON, handling different types for bDay and att
   ChildData.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         name = json['name'],
-        bDay = json['bDay'],  // if bDay is null
+        bDay = json['bDay'] is Timestamp
+            ? (json['bDay'] as Timestamp).toDate()
+            : json['bDay'] is String
+            ? DateTime.tryParse(json['bDay'])
+            : null,
         level = json['level'] ?? 0,
         gender = json['gender'] ?? '',
         notes = json['notes'] ?? '',
         imgUrl = json['imgUrl'],
-        att = (json['att'] as List<dynamic>)
-            .map((e) => DateTime.parse(e as String))
-            .toList();
+        att = (json['att'] as List<dynamic>?)
+            ?.map((e) => e is Timestamp
+            ? e.toDate()
+            : e is String
+            ? DateTime.tryParse(e) ?? DateTime.now()
+            : DateTime.now())
+            .toList() ??
+            [];
 
+  // Method to convert to JSON, formatting dates correctly
   Map<String, dynamic> toJson() {
     return {
       "id": id,
       "name": name,
-      "bDay": bDay, // Convert to ISO 8601 string if bDay is not null
+      "bDay": bDay != null ? Timestamp.fromDate(bDay!) : null,
       "level": level,
       "gender": gender,
       "notes": notes,
       "imgUrl": imgUrl,
-      "att": att.map((e) => e.toIso8601String()).toList(),
+      "att": att.map((e) => Timestamp.fromDate(e)).toList(),
     };
-  }
-
-  DateTime? getParsedBDay() {
-    // If bDay is not null, parse it
-    if (bDay != null) {
-      // Assuming the date format is 'd / m / yyyy'
-      String cleanedDateStr = bDay!.replaceAll(' / ', '-').replaceAll(' ', '');
-      return DateTime.tryParse(cleanedDateStr);
-    }
-    return null;
   }
 }

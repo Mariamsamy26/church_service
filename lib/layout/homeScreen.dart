@@ -8,7 +8,7 @@ import 'addScreen.dart';
 import 'leverScreen.dart';
 
 class Homescreen extends StatefulWidget {
-  const Homescreen({Key? key}) : super(key: key);
+  const Homescreen({super.key});
   static const String routeName = 'Home Screen';
 
   @override
@@ -57,7 +57,7 @@ class _HomescreenState extends State<Homescreen> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => LeverScreen(
-                                  genter: selectedGender,
+                                  gender: selectedGender,
                                   textLevel: DataApp.level[i],
                                   level: i+1,
                                 ),
@@ -72,7 +72,7 @@ class _HomescreenState extends State<Homescreen> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => LeverScreen(
-                                  genter: selectedGender,
+                                  gender: selectedGender,
                                   textLevel: DataApp.level[i],
                                   level: i+1,
                                 ),
