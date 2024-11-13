@@ -1,6 +1,7 @@
 import 'package:church/shared/style/color_manager.dart';
 import 'package:church/shared/style/fontForm.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // لاستيراد مكتبة التحكم بالإدخال
 
 class AppTextFormField extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
@@ -17,6 +18,8 @@ class AppTextFormField extends StatelessWidget {
   final TextEditingController? controller;
   final Function(String?) validator;
   final bool readOnly;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters; // إضافة فورماتر الإدخال
 
   const AppTextFormField({
     super.key,
@@ -34,19 +37,21 @@ class AppTextFormField extends StatelessWidget {
     this.prefixIcon,
     required this.label,
     this.readOnly = false,
+    this.keyboardType,
+    this.inputFormatters, // إضافة فورماتر الإدخال
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       readOnly: readOnly,
-      textAlign: TextAlign.right, // Apply text alignment for the input text
+      textAlign: TextAlign.right,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: FontForm.TextStyle30bold.copyWith(
-            backgroundColor: ColorManager.colorWhit
+          backgroundColor: ColorManager.colorWhit,
         ),
-        floatingLabelBehavior: FloatingLabelBehavior.always, // هذا السطر يثبت الـ label فوق الحقل
+        floatingLabelBehavior: FloatingLabelBehavior.always,
         isDense: false,
         contentPadding: contentPadding ??
             const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -90,6 +95,8 @@ class AppTextFormField extends StatelessWidget {
       validator: (value) {
         return validator(value);
       },
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters, // تعيين فورماتر الإدخال
     );
   }
 }

@@ -5,6 +5,7 @@ class ChildData {
   String? name;
   DateTime? bDay;
   int level;
+  String phone;
   String gender;
   String notes;
   String? imgUrl;
@@ -19,6 +20,7 @@ class ChildData {
     required this.notes,
     required this.imgUrl,
     required this.att,
+    required this.phone,
   });
 
   // Constructor for initializing from JSON, handling different types for bDay and att
@@ -31,6 +33,7 @@ class ChildData {
             ? DateTime.tryParse(json['bDay'])
             : null,
         level = json['level'] ?? 0,
+        phone = json['phone'] ?? 0100000000,
         gender = json['gender'] ?? '',
         notes = json['notes'] ?? '',
         imgUrl = json['imgUrl'],
@@ -50,6 +53,7 @@ class ChildData {
       "name": name,
       "bDay": bDay != null ? Timestamp.fromDate(bDay!) : null,
       "level": level,
+      "phone": phone,
       "gender": gender,
       "notes": notes,
       "imgUrl": imgUrl,

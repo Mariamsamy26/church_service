@@ -39,11 +39,13 @@ dependencies:
   firebase_core:
   firebase_auth:
   cloud_firestore:
-#  dependencies:
   firebase_messaging:
   provider:
   intl:
   table_calendar:
+  permission_handler:
+  url_launcher:
+
 
 dev_dependencies:
   flutter_test:

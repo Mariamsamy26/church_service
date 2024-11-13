@@ -24,6 +24,7 @@ class FirebaseService {
     required String name,
     required DateTime bDay,
     required int level,
+    required String phone,
     required String gender,
     required String notes,
     String? imgUrl,
@@ -44,6 +45,7 @@ class FirebaseService {
               ? 'assets/images/profileG.png'
               : 'assets/images/profileB.png'),
       att: [],
+      phone: phone,
     );
     await addChildData(newAccount);
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:church/shared/firebase/firebase_function.dart';
 import 'package:church/shared/style/color_manager.dart';
@@ -15,6 +16,7 @@ class AddScreen extends StatefulWidget {
 class _AddScreenState extends State<AddScreen> {
   DateTime selectedDate = DateTime.now();
   var nameController = TextEditingController();
+  var phoneController = TextEditingController();
   var bDayController = TextEditingController();
   var notesController = TextEditingController();
 
@@ -44,6 +46,7 @@ class _AddScreenState extends State<AddScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 30),
+
                       AppTextFormField(
                         controller: nameController,
                         hintText: "الاسم ",
@@ -63,6 +66,27 @@ class _AddScreenState extends State<AddScreen> {
                         ),
                         label: 'الاسم',
                       ),
+                      const SizedBox(height: 25),
+
+                      AppTextFormField(
+                        hintText: "رقم الهاتف",
+                        label: "الهاتف",
+                        controller: phoneController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "أدخل رقم الهاتف";
+                          } else if (value.length != 11) {
+                            return "يجب أن يتكون رقم الهاتف من 11 رقم";
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly, // حصر المدخلات على الأرقام فقط
+                          LengthLimitingTextInputFormatter(11),   // تحديد الحد الأقصى للطول بـ 11 رقم
+                        ],
+                      ),
+
                       const SizedBox(height: 25),
 
                       AppTextFormField(
@@ -121,9 +145,7 @@ class _AddScreenState extends State<AddScreen> {
                         ),
                         label: 'تاريخ الميلاد',
                         readOnly: true,
-                      ),
-
-                      //BD
+                      ),//BD
                       const SizedBox(height: 25),
 
                       CustomDropdownButtonFormField(
@@ -224,6 +246,7 @@ class _AddScreenState extends State<AddScreen> {
                                       DataApp.level.indexOf(selectedLevel!);
 
                                   await FirebaseService().saveChildData(
+                                    phone:phoneController.text,
                                     name: nameController.text,
                                     bDay: parsedDate,
                                     level: levelIndex + 1,

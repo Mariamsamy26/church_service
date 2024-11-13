@@ -96,14 +96,14 @@ class _LeverScreenState extends State<LeverScreen> {
                   return CustomCard(
                       profileImage: child!.imgUrl.toString(),
                       name: child.name!,
-                      birthDate: (child.bDay ?? "d/m/20--").toString(),
+                      phone: child.phone,
                       id: child.id ?? "N/A",
                       icon: Icons.info_rounded,
                       iconFunction: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => ChildDetailsScreen(childData: child)
-                          ),
+                              builder: (context) =>
+                                  ChildDetailsScreen(childData: child)),
                         );
                       });
                 },
