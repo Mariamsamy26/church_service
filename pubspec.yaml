@@ -44,6 +44,7 @@ dependencies:
   provider:
   intl:
   table_calendar:
+  url_launcher:
 
 dev_dependencies:
   flutter_test:

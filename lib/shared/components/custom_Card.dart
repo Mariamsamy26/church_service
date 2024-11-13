@@ -1,11 +1,13 @@
+import 'package:church/shared/style/color_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../style/fontForm.dart';
 
 class CustomCard extends StatelessWidget {
   final String profileImage;
   final String name;
-  final String birthDate;
+  final int phone;
   final String id;
   final IconData icon;
   final VoidCallback iconFunction;
@@ -14,11 +16,21 @@ class CustomCard extends StatelessWidget {
     super.key,
     required this.profileImage,
     required this.name,
-    required this.birthDate,
+    required this.phone,
     required this.id,
     required this.icon,
     required this.iconFunction,
   });
+
+  // دالة لفتح تطبيق الهاتف وإجراء مكالمة
+  void makePhoneCall(String phoneNumber) async {
+    final Uri phoneUri = Uri(scheme: 'tel', path: phoneNumber);
+    if (await canLaunchUrl(phoneUri)) {
+      await launchUrl(phoneUri);
+    } else {
+      throw 'Could not launch $phoneNumber';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +48,18 @@ class CustomCard extends StatelessWidget {
             height: 70,
           ),
           title: Text(
-            name ,
+            name,
             style: FontForm.TextStyle30bold,
           ),
-          subtitle: Text(
-            birthDate,
-            style: FontForm.TextStyle20bold,
+          subtitle: GestureDetector(
+            onTap: () => makePhoneCall(phone.toString()),
+            child: Text(
+              phone.toString(),
+              style: FontForm.TextStyle20bold.copyWith(
+                color: ColorManager.liteblueGray,
+                decoration: TextDecoration.underline,
+              ),
+            ),
           ),
           trailing: IconButton(
             onPressed: iconFunction,
