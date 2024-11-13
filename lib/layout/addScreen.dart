@@ -65,64 +65,65 @@ class _AddScreenState extends State<AddScreen> {
                       ),
                       const SizedBox(height: 25),
 
-                    AppTextFormField(
-                      controller: bDayController,
-                      suffixIcon:
-                      IconButton(
-                        onPressed: () async {
-                          DateTime? chosenDate = await showDatePicker(
-                            context: context,
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime.now(),
-                            initialDate: selectedDate,
-                            builder: (BuildContext context, Widget? child) {
-                              return Theme(
-                                data: Theme.of(context).copyWith(
-                                  colorScheme: ColorScheme.light(
-                                    primary: ColorManager.liteblueGray,
-                                    onSurface: ColorManager.scondeColor,
-                                  ),
-                                  textButtonTheme: TextButtonThemeData(
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: ColorManager.liteblueGray,
+                      AppTextFormField(
+                        controller: bDayController,
+                        suffixIcon: IconButton(
+                          onPressed: () async {
+                            DateTime? chosenDate = await showDatePicker(
+                              context: context,
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime.now(),
+                              initialDate: selectedDate,
+                              builder: (BuildContext context, Widget? child) {
+                                return Theme(
+                                  data: Theme.of(context).copyWith(
+                                    colorScheme: ColorScheme.light(
+                                      primary: ColorManager.liteblueGray,
+                                      onSurface: ColorManager.scondeColor,
+                                    ),
+                                    textButtonTheme: TextButtonThemeData(
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: ColorManager.liteblueGray,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                child: child!,
-                              );
-                            },
-                          );
-                          if (chosenDate != null) {
-                            selectedDate = chosenDate;
-                            String formattedDate = DateFormat('dd/MM/yyyy').format(chosenDate);
-                            bDayController.text = formattedDate;
-                            setState(() {}); // Update the UI if necessary
+                                  child: child!,
+                                );
+                              },
+                            );
+                            if (chosenDate != null) {
+                              selectedDate = chosenDate;
+                              // Formatting the chosen date as 'dd/MM/yyyy'
+                              String formattedDate = DateFormat('dd/MM/yyyy').format(chosenDate);
+                              bDayController.text = formattedDate;  // Setting the formatted date to the text field
+                              setState(() {}); // Update the UI after selecting the date
+                            }
+                          },
+                          icon: Icon(
+                            Icons.calendar_month_sharp,
+                            color: ColorManager.scondeColor,
+                          ),
+                        ),
+                        hintText: "تاريخ الميلاد",
+                        validator: (text) {
+                          if (text?.isEmpty ?? true) {
+                            return "اكتب تاريخ الميلاد";
                           }
+                          return null;
                         },
-                        icon: Icon(
-                          Icons.calendar_month_sharp,
-                          color: ColorManager.scondeColor, // Set the icon color
+                        backgroundColor: ColorManager.colorWhit,
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: ColorManager.primaryColor,
+                            width: 1.3,
+                          ),
+                          borderRadius: BorderRadius.circular(12.0),
                         ),
+                        label: 'تاريخ الميلاد',
+                        readOnly: true,
                       ),
-                      hintText: "تاريخ الميلاد",
-                      validator: (text) {
-                        if (text?.isEmpty ?? true) {
-                          return "اكتب تاريخ الميلاد";
-                        }
-                        return null;
-                      },
-                      backgroundColor: ColorManager.colorWhit,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: ColorManager.primaryColor,
-                          width: 1.3,
-                        ),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      label: 'تاريخ الميلاد',
-                      readOnly: true,
-                    ),
-                     //BD
+
+                      //BD
                       const SizedBox(height: 25),
 
                       CustomDropdownButtonFormField(

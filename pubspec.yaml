@@ -43,6 +43,7 @@ dependencies:
   firebase_messaging:
   provider:
   intl:
+  table_calendar:
 
 dev_dependencies:
   flutter_test:

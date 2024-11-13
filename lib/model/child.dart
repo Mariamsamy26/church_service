@@ -11,7 +11,7 @@ class ChildData {
   List<DateTime> att;
 
   ChildData({
-    required this.id,
+    this.id,
     required this.name,
     required this.bDay,
     required this.level,

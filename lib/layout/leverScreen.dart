@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:church/shared/style/fontForm.dart';
 
 import '../shared/components/appBar.dart';
 import '../shared/components/custom_Card.dart';
-import 'infoScreen.dart';
+import 'childDetailsScreen.dart';
 import '../shared/firebase/firebase_function.dart';
 import 'leveles/FiltersBar.dart';
 
@@ -26,7 +25,6 @@ class LeverScreen extends StatefulWidget {
 
 class _LeverScreenState extends State<LeverScreen> {
   String selectedMonths = "0";
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +52,6 @@ class _LeverScreenState extends State<LeverScreen> {
                     level: widget.level,
                     gender: widget.gender,
                     monthStr: selectedMonths,
-                    firestore: _firestore,
                   ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -97,23 +94,15 @@ class _LeverScreenState extends State<LeverScreen> {
                 itemBuilder: (context, index) {
                   var child = childrenData?[index];
                   return CustomCard(
-                      profileImage: widget.gender == 'G'
-                          ? 'assets/images/profileG.png'
-                          : 'assets/images/profileB.png',
-                      // profileImage: child!.imgUrl ==
-                      //     "https://example.com/default_profile.jpg"
-                      //     ? (widget.gender == 'B'
-                      //     ? 'assets/images/profileB.png'
-                      //     : 'assets/images/profileG.png')
-                      //     : (child.imgUrl ?? 'default_image_path'),
-                      name: child!.name!,
+                      profileImage: child!.imgUrl.toString(),
+                      name: child.name!,
                       birthDate: (child.bDay ?? "d/m/20--").toString(),
                       id: child.id ?? "N/A",
                       icon: Icons.info_rounded,
                       iconFunction: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => InfoScreen(child.id ?? "N/A"),
+                            builder: (context) => ChildDetailsScreen(childData: child)
                           ),
                         );
                       });
