@@ -40,14 +40,13 @@ class AppTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       readOnly: readOnly,
-      textAlign: TextAlign.right,
-      // Apply text alignment for the input text
+      textAlign: TextAlign.right, // Apply text alignment for the input text
       decoration: InputDecoration(
         labelText: label,
         labelStyle: FontForm.TextStyle30bold.copyWith(
             backgroundColor: ColorManager.colorWhit
         ),
-        floatingLabelBehavior: FloatingLabelBehavior.always,  // هذا السطر يثبت الـ label فوق الحقل
+        floatingLabelBehavior: FloatingLabelBehavior.always, // هذا السطر يثبت الـ label فوق الحقل
         isDense: false,
         contentPadding: contentPadding ??
             const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
