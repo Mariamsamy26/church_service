@@ -1,11 +1,12 @@
+import 'package:church/layout/leveles/ChildrenAtt.dart';
 import 'package:flutter/material.dart';
 import 'package:church/shared/style/fontForm.dart';
 
 import '../../shared/components/appBar.dart';
-import '../../shared/components/custom_Card.dart';
-import '../childDetailsScreen.dart';
 import '../../shared/firebase/firebase_function.dart';
 import 'FiltersBar.dart';
+import 'childrenFind.dart';
+import 'error.dart';
 
 class LeverScreen extends StatefulWidget {
   final int level;
@@ -45,7 +46,7 @@ class _LeverScreenState extends State<LeverScreen> {
             },
           ),
           StreamBuilder(
-            stream: selectedMonths == '0'
+            stream: selectedMonths == '0' || selectedMonths == '13'
                 ? FirebaseService()
                     .getChildrenByLevelAndGender(widget.level, widget.gender)
                 : FirebaseService().bDChildrenByLevelAndGender(
@@ -59,22 +60,9 @@ class _LeverScreenState extends State<LeverScreen> {
               }
 
               if (snapshot.hasError) {
-                return Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Something went wrong "),
-                      ElevatedButton(
-                        onPressed: () {
-                          print("kkk$snapshot.hasError");
-                          setState(() {});
-                        },
-                        child: Text("Try again"),
-                      ),
-                    ],
-                  ),
-                );
+                return ErrorPart(onPressed: () {
+                  setState(() {});
+                });
               }
 
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -87,27 +75,17 @@ class _LeverScreenState extends State<LeverScreen> {
               }
 
               var childrenData = snapshot.data;
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: childrenData?.length,
-                itemBuilder: (context, index) {
-                  var child = childrenData?[index];
-                  return CustomCard(
-                      profileImage: child!.imgUrl.toString(),
-                      name: child.name!,
-                      phone: child.phone,
-                      id: child.id ?? "N/A",
-                      icon: Icons.info_rounded,
-                      iconFunction: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  ChildDetailsScreen(childData: child)),
-                        );
+              if (selectedMonths == "13") {
+                return ChildrenAtt(
+                    onMonthChanged: (month) {
+                      setState(() {
+                        selectedMonths = month ?? '0';
                       });
-                },
-              );
+                    },
+                    childrenData: childrenData);
+              }
+
+              return ChildrenFind(childrenData: childrenData);
             },
           ),
         ],

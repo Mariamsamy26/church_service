@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class ChildData {
   String? id;
@@ -23,7 +24,6 @@ class ChildData {
     required this.phone,
   });
 
-  // Constructor for initializing from JSON, handling different types for bDay and att
   ChildData.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         name = json['name'],
@@ -33,7 +33,7 @@ class ChildData {
             ? DateTime.tryParse(json['bDay'])
             : null,
         level = json['level'] ?? 0,
-        phone = json['phone'] ?? 0100000000,
+        phone = json['phone'] ?? "0100000000",
         gender = json['gender'] ?? '',
         notes = json['notes'] ?? '',
         imgUrl = json['imgUrl'],
@@ -48,6 +48,8 @@ class ChildData {
 
   // Method to convert to JSON, formatting dates correctly
   Map<String, dynamic> toJson() {
+    final dateFormat = DateFormat('dd/MM/yyyy');
+
     return {
       "id": id,
       "name": name,
@@ -57,7 +59,17 @@ class ChildData {
       "gender": gender,
       "notes": notes,
       "imgUrl": imgUrl,
-      "att": att.map((e) => Timestamp.fromDate(e)).toList(),
+      "att": att
+          .map((e) => Timestamp.fromDate(e))
+          .toList(),
     };
+  }
+
+  String getFormattedBDay() {
+    return bDay != null ? DateFormat('dd/MM/yyyy').format(bDay!) : '';
+  }
+
+  List<String> getFormattedAttDates() {
+    return att.map((e) => DateFormat('dd/MM/yyyy').format(e)).toList();
   }
 }

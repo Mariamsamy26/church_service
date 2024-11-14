@@ -10,7 +10,6 @@ import '../shared/components/custom_Phone.dart';
 import '../shared/components/text_form_field.dart';
 import '../shared/style/color_manager.dart';
 
-
 class ChildDetailsScreen extends StatefulWidget {
   final ChildData childData;
 
@@ -27,7 +26,6 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
   late TextEditingController phoneController;
   DateTime selectedDate = DateTime.now();
   Color defaultColor = ColorManager.redSoft;
-
 
   @override
   void initState() {
@@ -55,6 +53,8 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Widget betwwen =
+        SizedBox(height: MediaQuery.of(context).size.height * 0.03);
     return Scaffold(
       appBar: AppbarCom(
         textAPP: "تفاصيل ",
@@ -62,7 +62,8 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
         onPressedApp: () {},
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.symmetric(
+            horizontal: 5, vertical: MediaQuery.of(context).size.height * 0.05),
         child: ListView(
           children: [
             //img
@@ -73,7 +74,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                 height: 150,
               ),
             ),
-            SizedBox(height: 16),
+            betwwen,
 
             //name
             AppTextFormField(
@@ -87,14 +88,16 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
               },
               label: 'الاسم',
             ),
-            SizedBox(height: 16),
+            betwwen,
 
             //phone
             AppTextFormField(
               controller: phoneController,
               suffixIcon: IconButton(
                 onPressed: () {
-                  customPhone(phone: widget.childData.phone,).makePhoneCall( widget.childData.phone);
+                  customPhone(
+                    phone: widget.childData.phone,
+                  ).makePhoneCall(widget.childData.phone);
                 },
                 icon: Icon(
                   Icons.phone,
@@ -110,7 +113,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
               },
               label: 'الرقم الهاتف ',
             ),
-            SizedBox(height: 16),
+            betwwen,
 
             // Editable Birthdate
             AppTextFormField(
@@ -162,7 +165,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
               label: 'تاريخ الميلاد',
               readOnly: true,
             ),
-            SizedBox(height: 16),
+            betwwen,
 
             // Editable Notes
             AppTextFormField(
@@ -176,7 +179,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
               },
               label: 'الملاحظات',
             ),
-            SizedBox(height: 16),
+            betwwen,
 
             // Attendance Dates
             Text(

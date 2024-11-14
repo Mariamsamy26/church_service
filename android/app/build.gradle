@@ -12,6 +12,7 @@ android {
     namespace = "com.example.church"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
+//    multiDexEnabled true
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -28,12 +29,15 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdkVersion 23
-//        minSdk = minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-
+        multiDexEnabled true
     }
+    dependencies {
+        implementation 'androidx.multidex:multidex:2.0.1'
+    }
+
 
     buildTypes {
         release {

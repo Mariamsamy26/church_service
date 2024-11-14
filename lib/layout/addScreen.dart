@@ -27,6 +27,8 @@ class _AddScreenState extends State<AddScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Widget betwwen =
+    SizedBox(height: MediaQuery.of(context).size.height * 0.025);
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -38,15 +40,15 @@ class _AddScreenState extends State<AddScreen> {
               height: double.infinity,
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.symmetric(
+                  horizontal: 5, vertical: MediaQuery.of(context).size.height * 0.05),
               child: Form(
                 key: formKey,
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 30),
-
+                      betwwen,
                       AppTextFormField(
                         controller: nameController,
                         hintText: "الاسم ",
@@ -59,8 +61,7 @@ class _AddScreenState extends State<AddScreen> {
                         backgroundColor: ColorManager.colorWhit,
                         label: 'الاسم',
                       ),
-                      const SizedBox(height: 25),
-
+                      betwwen,
                       AppTextFormField(
                         hintText: "رقم الهاتف",
                         label: "الهاتف",
@@ -80,8 +81,7 @@ class _AddScreenState extends State<AddScreen> {
                           LengthLimitingTextInputFormatter(11),
                         ],
                       ),
-                      const SizedBox(height: 25),
-
+                      betwwen,
                       AppTextFormField(
                         controller: bDayController,
                         suffixIcon: IconButton(
@@ -100,7 +100,8 @@ class _AddScreenState extends State<AddScreen> {
                                     ),
                                     textButtonTheme: TextButtonThemeData(
                                       style: TextButton.styleFrom(
-                                        foregroundColor: ColorManager.liteblueGray,
+                                        foregroundColor:
+                                        ColorManager.liteblueGray,
                                       ),
                                     ),
                                   ),
@@ -110,10 +111,11 @@ class _AddScreenState extends State<AddScreen> {
                             );
                             if (chosenDate != null) {
                               selectedDate = chosenDate;
-                              // Formatting the chosen date as 'dd/MM/yyyy'
-                              String formattedDate = DateFormat('dd/MM/yyyy').format(chosenDate);
-                              bDayController.text = formattedDate;  // Setting the formatted date to the text field
-                              setState(() {}); // Update the UI after selecting the date
+                              String formattedDate =
+                              DateFormat('dd/MM/yyyy').format(chosenDate);
+                              bDayController.text =
+                                  formattedDate;
+                              setState(() {});
                             }
                           },
                           icon: Icon(
@@ -131,9 +133,8 @@ class _AddScreenState extends State<AddScreen> {
                         backgroundColor: ColorManager.colorWhit,
                         label: 'تاريخ الميلاد',
                         readOnly: true,
-                      ),//BD
-                      const SizedBox(height: 25),
-
+                      ),
+                      betwwen,
                       CustomDropdownButtonFormField(
                         width: double.infinity,
                         selectedValue: selectedLevel,
@@ -151,8 +152,7 @@ class _AddScreenState extends State<AddScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 25),
-
+                      betwwen,
                       CustomDropdownButtonFormField(
                         width: double.infinity,
                         selectedValue: selectedGender,
@@ -165,13 +165,12 @@ class _AddScreenState extends State<AddScreen> {
                         },
                         validator: (String? value) {
                           if (value == null || value.isEmpty) {
-                            return "الجنس";
+                            return "الرجاء اختيار الجنس";
                           }
                           return null;
                         },
                       ),
-                      const SizedBox(height: 25),
-
+                      betwwen,
                       AppTextFormField(
                         controller: notesController,
                         hintText: "ملاحظات إضافية ",
@@ -179,8 +178,7 @@ class _AddScreenState extends State<AddScreen> {
                         backgroundColor: ColorManager.colorWhit,
                         label: 'ملاحظات',
                       ),
-                      const SizedBox(height: 25),
-
+                      betwwen,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -196,7 +194,7 @@ class _AddScreenState extends State<AddScreen> {
                               },
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          betwwen,
                           Expanded(
                             flex: 1,
                             child: CustomElevatedButton(
@@ -219,11 +217,13 @@ class _AddScreenState extends State<AddScreen> {
                                   DateTime parsedDate = DateFormat('dd/MM/yyyy')
                                       .parse(bDayController.text);
 
-                                  String genderCode = selectedGender == "ولد" ? "B" : "G";
-                                  int levelIndex = DataApp.level.indexOf(selectedLevel!);
+                                  String genderCode =
+                                  selectedGender == "ولد" ? "B" : "G";
+                                  int levelIndex =
+                                  DataApp.level.indexOf(selectedLevel!);
 
                                   await FirebaseService().saveChildData(
-                                    phone:phoneController.text,
+                                    phone: phoneController.text,
                                     name: nameController.text,
                                     bDay: parsedDate,
                                     level: levelIndex + 1,
