@@ -98,7 +98,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                 },
                 icon: Icon(
                   Icons.phone,
-                  color: ColorManager.scondeColor,
+                  color: ColorManager.liteblueGray,
                 ),
               ),
               hintText: "الرقم الجديد",
