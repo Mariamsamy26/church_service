@@ -7,10 +7,6 @@ class ColorManager{
 
   static const Color redSoft = Color.fromRGBO(241, 85, 85, 0.95);
   static const Color greenSoft = Color.fromRGBO(129, 199, 132, 1.0);
-  //
-
-
-
 
   static const Color colorWhit= Colors.white70;
   static const Color colorGrayBlue =Color.fromRGBO(51, 51, 51, 1);

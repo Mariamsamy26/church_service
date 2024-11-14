@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../style/fontForm.dart';
+import 'customPhone.dart';
 
 class CustomCard extends StatelessWidget {
   final String profileImage;
@@ -21,24 +22,6 @@ class CustomCard extends StatelessWidget {
     required this.icon,
     required this.iconFunction,
   });
-
-  Future<void> requestPhonePermission() async {
-    PermissionStatus status = await Permission.phone.request();
-    if (status.isGranted) {
-      makePhoneCall(phone.toString());
-    } else {
-      print("Permission denied.");
-    }
-  }
-
-  Future<void> makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(
-      scheme: 'tel',
-      path: phoneNumber,
-    );
-    await launchUrl(launchUri);
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -59,16 +42,7 @@ class CustomCard extends StatelessWidget {
             name,
             style: FontForm.TextStyle30bold,
           ),
-          subtitle: GestureDetector(
-            onTap: () => makePhoneCall(phone.toString()),
-            child: Text(
-              phone.toString(),
-              style: FontForm.TextStyle20bold.copyWith(
-                color: ColorManager.liteblueGray,
-                decoration: TextDecoration.underline,
-              ),
-            ),
-          ),
+          subtitle: customPhone(phone: phone),
           trailing: IconButton(
             onPressed: iconFunction,
             icon: Icon(

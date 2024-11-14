@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../shared/components/custem_showDialog.dart';
 import '../shared/components/appBar.dart';
-import '../shared/components/categary.dart';
+import '../shared/components/custom_ElevatedButton.dart';
 import 'addScreen.dart';
 import 'leverScreen.dart';
 
@@ -39,55 +39,48 @@ class _HomescreenState extends State<Homescreen> {
               width: double.infinity,
               height: double.infinity,
             ),
-            Column(
+            ListView(
               children: [
                 for (int i = 0; i < 3; i++)
-                  CustomIconBottom(
-                    text: DataApp.level[i],
-                    OnPressed: () async {
-                      showDialog<String>(
-                        context: context,
-                        builder: (BuildContext context) => CustomShowDialog(
-                          title: 'gender . . .',
-                          frisIcon: Icons.girl_outlined,
-                          firstText: DataApp.genter[0],
-                          onFirstPressed: () {
-                            selectedGender = "G";
-                            Navigator.of(context).pop();
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => LeverScreen(
-                                  gender: selectedGender,
-                                  textLevel: DataApp.level[i],
-                                  level: i+1,
-                                ),
+                  CustomElevatedButton(text:DataApp.level[i], OnPressed: ()async {
+                    showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => CustomShowDialog(
+                        title: 'gender . . .',
+                        frisIcon: Icons.girl_outlined,
+                        firstText: DataApp.genter[0],
+                        onFirstPressed: () {
+                          selectedGender = "G";
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => LeverScreen(
+                                gender: selectedGender,
+                                textLevel: DataApp.level[i],
+                                level: i+1,
                               ),
-                            );
-                          },
-                          secIcon: Icons.boy_outlined,
-                          secondText: DataApp.genter[1],
-                          onSecondPressed: () {
-                            selectedGender = "B";
-                            Navigator.of(context).pop();
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => LeverScreen(
-                                  gender: selectedGender,
-                                  textLevel: DataApp.level[i],
-                                  level: i+1,
-                                ),
+                            ),
+                          );
+                        },
+                        secIcon: Icons.boy_outlined,
+                        secondText: DataApp.genter[1],
+                        onSecondPressed: () {
+                          selectedGender = "B";
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => LeverScreen(
+                                gender: selectedGender,
+                                textLevel: DataApp.level[i],
+                                level: i+1,
                               ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    width: 300,
-                    heightIcon: 150,
-                    widthIcon: 150,
-                    height: 150,
-                    iconPath: '',
-                  ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },),
+
               ],
             ),
           ],
