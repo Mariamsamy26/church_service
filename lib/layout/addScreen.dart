@@ -57,13 +57,6 @@ class _AddScreenState extends State<AddScreen> {
                           return null;
                         },
                         backgroundColor: ColorManager.colorWhit,
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: ColorManager.primaryColor,
-                            width: 1.3,
-                          ),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
                         label: 'الاسم',
                       ),
                       const SizedBox(height: 25),
@@ -80,13 +73,13 @@ class _AddScreenState extends State<AddScreen> {
                           }
                           return null;
                         },
+                        backgroundColor: ColorManager.colorWhit,
                         keyboardType: TextInputType.phone,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly, // حصر المدخلات على الأرقام فقط
-                          LengthLimitingTextInputFormatter(11),   // تحديد الحد الأقصى للطول بـ 11 رقم
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(11),
                         ],
                       ),
-
                       const SizedBox(height: 25),
 
                       AppTextFormField(
@@ -136,13 +129,6 @@ class _AddScreenState extends State<AddScreen> {
                           return null;
                         },
                         backgroundColor: ColorManager.colorWhit,
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: ColorManager.primaryColor,
-                            width: 1.3,
-                          ),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
                         label: 'تاريخ الميلاد',
                         readOnly: true,
                       ),//BD
@@ -191,13 +177,6 @@ class _AddScreenState extends State<AddScreen> {
                         hintText: "ملاحظات إضافية ",
                         validator: (text) {},
                         backgroundColor: ColorManager.colorWhit,
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: ColorManager.primaryColor,
-                            width: 1.3,
-                          ),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
                         label: 'ملاحظات',
                       ),
                       const SizedBox(height: 25),
@@ -240,10 +219,8 @@ class _AddScreenState extends State<AddScreen> {
                                   DateTime parsedDate = DateFormat('dd/MM/yyyy')
                                       .parse(bDayController.text);
 
-                                  String genderCode =
-                                  selectedGender == "ولد" ? "B" : "G";
-                                  int levelIndex =
-                                  DataApp.level.indexOf(selectedLevel!);
+                                  String genderCode = selectedGender == "ولد" ? "B" : "G";
+                                  int levelIndex = DataApp.level.indexOf(selectedLevel!);
 
                                   await FirebaseService().saveChildData(
                                     phone:phoneController.text,

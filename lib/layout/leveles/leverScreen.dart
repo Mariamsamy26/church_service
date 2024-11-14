@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:church/shared/style/fontForm.dart';
 
-import '../shared/components/appBar.dart';
-import '../shared/components/custom_Card.dart';
-import 'childDetailsScreen.dart';
-import '../shared/firebase/firebase_function.dart';
-import 'leveles/FiltersBar.dart';
+import '../../shared/components/appBar.dart';
+import '../../shared/components/custom_Card.dart';
+import '../childDetailsScreen.dart';
+import '../../shared/firebase/firebase_function.dart';
+import 'FiltersBar.dart';
 
 class LeverScreen extends StatefulWidget {
   final int level;

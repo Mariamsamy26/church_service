@@ -13,12 +13,13 @@ class CustomElevatedButton extends StatelessWidget {
   Color colorText;
 
   CustomElevatedButton({
+    super.key,
     required this.text,
     required this.OnPressed,
     this.height = 62,
     this.width = 327,
     this.colorBorder = ColorManager.colorGray,
-    this.colorButton =ColorManager.colorGray,
+    this.colorButton = ColorManager.colorGray,
     this.colorText = ColorManager.primaryColor,
   });
 
@@ -43,7 +44,7 @@ class CustomElevatedButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(18),
                 )),
             child: Text(text,
-                style: FontForm.TextStyle50bold.copyWith(color: colorText)),
+                style: FontForm.TextStyle40bold.copyWith(color: colorText)),
           ),
         ),
       ),

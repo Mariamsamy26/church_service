@@ -38,7 +38,8 @@ class customPhone extends StatelessWidget {
         phone.toString(),
         style: FontForm.TextStyle20bold.copyWith(
           color: ColorManager.liteblueGray,
-          decoration: TextDecoration.underline,
+          decoration: TextDecoration.underline ,
+          decorationColor: ColorManager.liteblueGray,
         ),
       ),
     );

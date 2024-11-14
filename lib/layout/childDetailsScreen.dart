@@ -2,12 +2,14 @@ import 'package:church/shared/components/appBar.dart';
 import 'package:church/shared/style/fontForm.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart'; // Add TableCalendar package
+import 'package:table_calendar/table_calendar.dart';
 
 import '../model/child.dart';
 import '../shared/components/custom_ElevatedButton.dart';
-import '../shared/components/text_form_field.dart'; // Assuming AppTextFormField is here
-import '../shared/style/color_manager.dart'; // Assuming you need the colors
+import '../shared/components/custom_Phone.dart';
+import '../shared/components/text_form_field.dart';
+import '../shared/style/color_manager.dart';
+
 
 class ChildDetailsScreen extends StatefulWidget {
   final ChildData childData;
@@ -22,8 +24,10 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
   late TextEditingController nameController;
   late TextEditingController bDayController;
   late TextEditingController notesController;
+  late TextEditingController phoneController;
   DateTime selectedDate = DateTime.now();
   Color defaultColor = ColorManager.redSoft;
+
 
   @override
   void initState() {
@@ -32,6 +36,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
     bDayController = TextEditingController(
         text: DateFormat('dd/MM/yyyy').format(widget.childData.bDay!));
     notesController = TextEditingController(text: widget.childData.notes);
+    phoneController = TextEditingController(text: widget.childData.phone);
   }
 
   @override
@@ -39,6 +44,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
     nameController.dispose();
     bDayController.dispose();
     notesController.dispose();
+    phoneController.dispose();
     super.dispose();
   }
 
@@ -59,6 +65,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
+            //img
             ClipOval(
               child: Image.asset(
                 widget.childData.imgUrl!,
@@ -68,6 +75,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
             ),
             SizedBox(height: 16),
 
+            //name
             AppTextFormField(
               controller: nameController,
               hintText: "الاسم",
@@ -77,17 +85,31 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                 }
                 return null;
               },
-              backgroundColor: ColorManager.colorWhit,
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: ColorManager.primaryColor,
-                  width: 1.3,
-                ),
-                borderRadius: BorderRadius.circular(12.0),
-              ),
               label: 'الاسم',
             ),
-            // name
+            SizedBox(height: 16),
+
+            //phone
+            AppTextFormField(
+              controller: phoneController,
+              suffixIcon: IconButton(
+                onPressed: () {
+                  customPhone(phone: widget.childData.phone,).makePhoneCall( widget.childData.phone);
+                },
+                icon: Icon(
+                  Icons.phone,
+                  color: ColorManager.scondeColor,
+                ),
+              ),
+              hintText: "الرقم الجديد",
+              validator: (text) {
+                if (text?.isEmpty ?? true) {
+                  return "اكتب الرقم الجديد";
+                }
+                return null;
+              },
+              label: 'الرقم الهاتف ',
+            ),
             SizedBox(height: 16),
 
             // Editable Birthdate
@@ -137,18 +159,9 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                 }
                 return null;
               },
-              backgroundColor: ColorManager.colorWhit,
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: ColorManager.primaryColor,
-                  width: 1.3,
-                ),
-                borderRadius: BorderRadius.circular(12.0),
-              ),
               label: 'تاريخ الميلاد',
               readOnly: true,
             ),
-            // birthdate
             SizedBox(height: 16),
 
             // Editable Notes
@@ -161,27 +174,16 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                 }
                 return null;
               },
-              backgroundColor: ColorManager.colorWhit,
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: ColorManager.primaryColor,
-                  width: 1.3,
-                ),
-                borderRadius: BorderRadius.circular(12.0),
-              ),
               label: 'الملاحظات',
             ),
             SizedBox(height: 16),
 
-            // Display Attendance Dates
+            // Attendance Dates
             Text(
               "الغياب",
               style: FontForm.TextStyle30bold.copyWith(
                   backgroundColor: ColorManager.colorWhit),
             ),
-            SizedBox(height: 16),
-
-            //النتيجه
             TableCalendar(
               firstDay: DateTime.utc(2023, 11, 01),
               lastDay: DateTime.now(),

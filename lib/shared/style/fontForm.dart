@@ -9,6 +9,11 @@ class FontForm {
     fontSize: 50,
     color: ColorManager.scondeColor, // Replace with your actual color
   );
+  static TextStyle TextStyle40bold = GoogleFonts.amiri(
+    fontWeight: FontWeight.w400,
+    fontSize: 40,
+    color: ColorManager.scondeColor, // Replace with your actual color
+  );
   static TextStyle TextStyle30bold = GoogleFonts.acme(
     fontWeight: FontWeight.w400,
     fontSize: 30,
