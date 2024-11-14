@@ -246,7 +246,7 @@ class _AddScreenState extends State<AddScreen> {
                                       DataApp.level.indexOf(selectedLevel!);
 
                                   await FirebaseService().saveChildData(
-                                    phone:phoneController.text,
+                                    phone:0,//////////////
                                     name: nameController.text,
                                     bDay: parsedDate,
                                     level: levelIndex + 1,
