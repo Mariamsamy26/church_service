@@ -241,12 +241,12 @@ class _AddScreenState extends State<AddScreen> {
                                       .parse(bDayController.text);
 
                                   String genderCode =
-                                      selectedGender == "ولد" ? "B" : "G";
+                                  selectedGender == "ولد" ? "B" : "G";
                                   int levelIndex =
-                                      DataApp.level.indexOf(selectedLevel!);
+                                  DataApp.level.indexOf(selectedLevel!);
 
                                   await FirebaseService().saveChildData(
-                                    phone:0,//////////////
+                                    phone:phoneController.text,
                                     name: nameController.text,
                                     bDay: parsedDate,
                                     level: levelIndex + 1,
