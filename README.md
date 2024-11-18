@@ -30,6 +30,7 @@ This project is built using Flutter. To run the app locally:
    ```
    flutter pub ge
 
+``` 
  4. **Run the app:** 
    ```
    flutter run
