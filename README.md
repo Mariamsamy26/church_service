@@ -22,7 +22,7 @@ This project is built using Flutter. To run the app locally:
    
 2.Navigate to the project directory:
 ```bash
-  cd church_service
+  cd church_service```
 
 3.Install dependencies:
 ```bash
