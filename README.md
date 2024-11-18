@@ -17,25 +17,21 @@ A Flutter-based application designed to assist church servants in managing middl
 This project is built using Flutter. To run the app locally:  
 
 Clone the repository:
+ 1. Clone the repository:  
+   ```bash
+   git clone https://github.com/Mariamsamy26/church_service.git
+   
+2.Navigate to the project directory:
+   ```
+  cd church_service ```
 
-bash
-Copy code
-git clone https://github.com/Mariamsamy26/church_service.git
-Navigate to the project directory:
-
-bash
-Copy code
-cd church_service
-Install dependencies:
-
-bash
-Copy code
-flutter pub get
-Run the app:
-
-bash
-Copy code
-flutter run
+3.Install dependencies:
+   ```
+ flutter pub ge ```
+   
+4.Run the app:
+   ```
+  flutter run ```
 
   
 Resources
