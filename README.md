@@ -29,11 +29,11 @@ This project is built using Flutter. To run the app locally:
    ```
    flutter pub ge
 
- 4. ** Run the app:** 
+ 4. **Run the app:** 
    ```
    flutter run
 
-  
+```  
 Resources
   Lab: Write your first Flutter app
   Cookbook: Useful Flutter samples
