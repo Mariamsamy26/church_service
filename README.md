@@ -1,16 +1,40 @@
-# church
+Church Service Management App
+A Flutter-based application designed to assist church servants in managing middle school ministry more effectively. The app simplifies data management, attendance tracking, and communication for enhanced organization and efficiency.
 
-A new Flutter project.
+Features
+Child Data Management:
+Add, edit, or delete child profiles, including name, age, gender, and phone number.
+Categorized Display:
+View children grouped by grade (e.g., Prep 1, Prep 2, Prep 3) and gender for better organization.
+Direct Communication:
+Call a child's registered phone number directly from the app.
+Attendance Tracking:
+Record attendance and display it in a calendar view for easy tracking.
+Getting Started
+This project is built using Flutter. To run the app locally:
 
-## Getting Started
+Clone the repository:
+bash
+Copy code
+git clone https://github.com/Mariamsamy26/church_service.git
+Navigate to the project directory:
+bash
+Copy code
+cd church_service
+Install dependencies:
+bash
+Copy code
+flutter pub get
+Run the app:
+bash
+Copy code
+flutter run
+Resources
+Lab: Write your first Flutter app
+Cookbook: Useful Flutter samples
+Flutter Documentation
+Contributing
+Contributions are welcome! If you'd like to contribute, feel free to open a pull request or submit an issue.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+License
+This project is licensed under the MIT License.
