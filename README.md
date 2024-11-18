@@ -36,13 +36,12 @@ This project is built using Flutter. To run the app locally:
    flutter run
 
 ```  
-Resources
-  Lab: Write your first Flutter app
-  Cookbook: Useful Flutter samples
-  Flutter Documentation
+## Resources
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- [Flutter Documentation](https://docs.flutter.dev/)
 
-Contributing
-  Contributions are welcome! If you'd like to contribute, feel free to open a pull request or submit an issue.
+## Contributing
+Contributions are welcome! If you'd like to contribute, feel free to open a pull request or submit an issue.
 
-License
   This project is licensed under the MIT License.
