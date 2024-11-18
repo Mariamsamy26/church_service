@@ -25,6 +25,7 @@ This project is built using Flutter. To run the app locally:
    ```
    cd church_service
 
+``` 
  3. **Install dependencies:** 
    ```
    flutter pub ge
