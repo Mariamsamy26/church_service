@@ -18,20 +18,16 @@ This project is built using Flutter. To run the app locally:
 
 Clone the repository:
  1. Clone the repository:  
-   ```bash
-   git clone https://github.com/Mariamsamy26/church_service.git ```
+   ```git clone https://github.com/Mariamsamy26/church_service.git ```
    
 2.Navigate to the project directory:
-   ```
-  cd church_service ```
+   ```cd church_service ```
 
 3.Install dependencies:
-   ```
- flutter pub ge ```
+   ```flutter pub ge ```
    
 4.Run the app:
-   ```
-  flutter run ```
+   ```flutter run ```
 
   
 Resources
