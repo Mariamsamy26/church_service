@@ -26,11 +26,11 @@ This project is built using Flutter. To run the app locally:
 
 3.Install dependencies:
 ```bash
- flutter pub get
+ flutter pub get```
    
 4.Run the app:
 ```bash
-  flutter run
+  flutter run```
   
 Resources
   Lab: Write your first Flutter app
