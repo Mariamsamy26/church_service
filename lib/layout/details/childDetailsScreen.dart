@@ -4,7 +4,6 @@ import 'package:church/shared/firebase/firebase_function.dart';
 import 'package:church/shared/style/fontForm.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 import '../../model/child.dart';
 import '../../shared/components/custom_ElevatedButton.dart';
@@ -17,7 +16,7 @@ import 'beleteDialog.dart';
 class ChildDetailsScreen extends StatefulWidget {
   final ChildData childData;
 
-  ChildDetailsScreen({required this.childData});
+  const ChildDetailsScreen({required this.childData});
 
   @override
   _ChildDetailsScreenState createState() => _ChildDetailsScreenState();
@@ -48,11 +47,6 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
     notesController.dispose();
     phoneController.dispose();
     super.dispose();
-  }
-
-// Function to check if a specific date is a Friday
-  bool isFriday(DateTime date) {
-    return date.weekday == DateTime.friday;
   }
 
   @override
@@ -86,16 +80,6 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
             horizontal: 5, vertical: MediaQuery.of(context).size.height * 0.05),
         child: ListView(
           children: [
-            //img
-            ClipOval(
-              child: Image.asset(
-                widget.childData.imgUrl!,
-                width: 150, // Adjust size as needed
-                height: 150,
-              ),
-            ),
-            betwwen,
-
             //name
             AppTextFormField(
               controller: nameController,
@@ -203,6 +187,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
 
             // Attendance Dates
             Text(
+              textAlign: TextAlign.right,
               "الغياب",
               style: FontForm.TextStyle30bold.copyWith(
                   backgroundColor: ColorManager.colorWhit),
