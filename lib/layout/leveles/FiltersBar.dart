@@ -24,7 +24,7 @@ class _FiltersBarState extends State<FiltersBar> {
   @override
   void initState() {
     super.initState();
-    selectedMonths = '0';
+    selectedMonths = "كل الاشهر";
     buttonBorderColor = ColorManager.primaryColor;
     buttonColor = ColorManager.colorWhit;
     buttonColorText = ColorManager.primaryColor;

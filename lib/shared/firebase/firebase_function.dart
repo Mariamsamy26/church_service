@@ -127,10 +127,11 @@ class FirebaseService {
 
   // Save attendance for a child
   Future<void> saveAttendance({
-    required String childId,
+    required String? childId,
     required int level,
     required String gender,
     required DateTime attendanceDate,
+    required bool state,  // إذا كانت true نضيف، وإذا كانت false نحذف
   }) async {
     try {
       String collectionName = 'Level_${level}_$gender';
@@ -143,20 +144,27 @@ class FirebaseService {
             ? (data['att'] as List).map((e) => (e as Timestamp).toDate()).toList()
             : [];
 
-        if (currentAttendance.any((date) =>
-        date.year == attendanceDate.year &&
-            date.month == attendanceDate.month &&
-            date.day == attendanceDate.day)) {
-          print("Attendance already exists for $childId on $attendanceDate");
-          return;
+        if (state) {
+          if (currentAttendance.any((date) =>
+          date.year == attendanceDate.year &&
+              date.month == attendanceDate.month &&
+              date.day == attendanceDate.day)) {
+            print("Attendance already exists for $childId on $attendanceDate");
+            return;
+          }
+          currentAttendance.add(attendanceDate);
+        } else {
+          currentAttendance.removeWhere((date) =>
+          date.year == attendanceDate.year &&
+              date.month == attendanceDate.month &&
+              date.day == attendanceDate.day);
         }
 
-        currentAttendance.add(attendanceDate);
         await docRef.update({
           'att': currentAttendance.map((e) => Timestamp.fromDate(e)).toList(),
         });
 
-        print("Attendance saved for $childId on ${attendanceDate.toLocal()}");
+        print("Attendance ${state ? 'added' : 'removed'} for $childId on ${attendanceDate.toLocal()}");
       } else {
         print("Child document with ID $childId does not exist.");
       }
@@ -164,5 +172,7 @@ class FirebaseService {
       print("Error saving attendance: $e");
     }
   }
+
+
 
 }

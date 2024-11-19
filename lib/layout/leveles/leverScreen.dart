@@ -25,7 +25,7 @@ class LeverScreen extends StatefulWidget {
 }
 
 class _LeverScreenState extends State<LeverScreen> {
-  String selectedMonths = "0";
+  String selectedMonths = "كل الاشهر";
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +41,12 @@ class _LeverScreenState extends State<LeverScreen> {
           FiltersBar(
             onMonthChanged: (month) {
               setState(() {
-                selectedMonths = month ?? '0';
+                selectedMonths = month ?? "كل الاشهر";
               });
             },
           ),
           StreamBuilder(
-            stream: selectedMonths == '0' || selectedMonths == '13'
+            stream: selectedMonths == "كل الاشهر" || selectedMonths == '13'
                 ? FirebaseService()
                     .getChildrenByLevelAndGender(widget.level, widget.gender)
                 : FirebaseService().bDChildrenByLevelAndGender(
@@ -79,7 +79,7 @@ class _LeverScreenState extends State<LeverScreen> {
                 return ChildrenAtt(
                     onMonthChanged: (month) {
                       setState(() {
-                        selectedMonths = month ?? '0';
+                        selectedMonths = month ?? "كل الاشهر";
                       });
                     },
                     childrenData: childrenData);
