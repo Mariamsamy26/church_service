@@ -5,10 +5,13 @@ import 'package:church/shared/style/color_manager.dart';
 import 'package:flutter/material.dart';
 import '../shared/components/custom_DropdownButtonFormField.dart';
 import '../shared/components/custom_ElevatedButton.dart';
+import '../shared/components/showCustomSnackbar.dart';
 import '../shared/components/text_form_field.dart';
 import '../shared/dataApp.dart';
 
 class AddScreen extends StatefulWidget {
+  const AddScreen({super.key});
+
   @override
   State<AddScreen> createState() => _AddScreenState();
 }
@@ -48,6 +51,7 @@ class _AddScreenState extends State<AddScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // zCustomImg(icon: Icons.add_a_photo),
                       betwwen,
                       AppTextFormField(
                         controller: nameController,
@@ -204,36 +208,42 @@ class _AddScreenState extends State<AddScreen> {
                               text: 'حفظ',
                               OnPressed: () async {
                                 if (formKey.currentState!.validate()) {
-                                  if (selectedLevel == null ||
-                                      selectedGender == null) {
+                                  if (selectedLevel == null || selectedGender == null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text(
-                                              'الرجاء اختيار المستوى والجنس')),
+                                      SnackBar(content: Text('الرجاء اختيار المستوى والجنس')),
                                     );
                                     return;
                                   }
 
-                                  DateTime parsedDate = DateFormat('dd/MM/yyyy')
-                                      .parse(bDayController.text);
+                                  DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(bDayController.text);
 
-                                  String genderCode =
-                                  selectedGender == "ولد" ? "B" : "G";
-                                  int levelIndex =
-                                  DataApp.level.indexOf(selectedLevel!);
+                                  String genderCode = selectedGender == "ولد" ? "B" : "G";
+                                  int levelIndex = DataApp.level.indexOf(selectedLevel!);
 
-                                  await FirebaseService().saveChildData(
-                                    phone: phoneController.text,
-                                    name: nameController.text,
-                                    bDay: parsedDate,
-                                    level: levelIndex + 1,
-                                    gender: genderCode,
-                                    notes: notesController.text,
-                                  );
+                                  try {
+                                    await FirebaseService().saveChildData(
+                                      phone: phoneController.text,
+                                      name: nameController.text,
+                                      bDay: parsedDate,
+                                      level: levelIndex + 1,
+                                      gender: genderCode,
+                                      notes: notesController.text,
+                                    );
 
-                                  Navigator.pop(context);
+                                    Navigator.pop(context);
+                                    showCustomSnackbar(
+                                      context: context,
+                                      message: 'تم المخدوم!',
+                                      backgroundColor: ColorManager.primaryColor,
+                                    );
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('خطأ في حفظ البيانات: $e')),
+                                    );
+                                  }
                                 }
                               },
+
                             ),
                           ),
                         ],

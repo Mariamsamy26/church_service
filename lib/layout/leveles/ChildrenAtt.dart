@@ -1,9 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:church/shared/style/color_manager.dart';
 import 'package:church/shared/style/fontForm.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../model/child.dart';
 import '../../shared/components/custom_Card.dart';
+import '../../shared/components/showCustomSnackbar.dart';
 import '../../shared/firebase/firebase_function.dart';
 
 class ChildrenAtt extends StatefulWidget {
@@ -22,26 +23,7 @@ class _ChildrenAttState extends State<ChildrenAtt> {
 
   Map<String, bool> attendanceSelection = {};
 
-  Future<void> _saveAttendance() async {
-    final collection = FirebaseFirestore.instance.collection('children');
 
-    for (var child in widget.childrenData!) {
-      if (attendanceSelection[child.id ?? ""] == true) {
-        child.att.add(DateTime.parse(dayToday));
-
-        await collection.doc(child.id).update({
-          'att': child.att.map((e) => Timestamp.fromDate(e)).toList(),
-        }).catchError((e) {
-          print("Error updating attendance: $e");
-        });
-      }
-    }
-
-    // Clear the selection after saving
-    setState(() {
-      attendanceSelection.clear();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,10 +62,10 @@ class _ChildrenAttState extends State<ChildrenAtt> {
           children: [
             ElevatedButton(
               onPressed: () async {
-
                 for (var child in widget.childrenData!) {
                   if (attendanceSelection[child.id!] == true) {
                     DateTime attendanceDate = DateFormat('dd/MM/yyyy').parse(dayToday);
+
                     await FirebaseService().saveAttendance(
                       childId: child.id!,
                       level: child.level,
@@ -93,10 +75,14 @@ class _ChildrenAttState extends State<ChildrenAtt> {
                   }
                 }
                 widget.onMonthChanged("0");
+                showCustomSnackbar(
+                  context: context,
+                  message: 'تم الحضور بنجاح!',
+                  backgroundColor: ColorManager.greenSoft
+                );
               },
               child: Text("تأكيد الحضور"),
-            )
-
+            ),
           ],
         ),
       ],

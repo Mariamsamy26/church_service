@@ -5,7 +5,6 @@ class FirebaseService {
   Map<int, List<ChildData>> childrenByLevel = {};
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-
   // Add child data to Firestore
   Future<void> addChildData(ChildData childModel) async {
     try {
@@ -16,11 +15,11 @@ class FirebaseService {
           .set(childModel.toJson());
       print('Child data added with id: ${childModel.id}');
     } catch (e) {
-      print('Error adding child data mmm: $e');
+      print('Error adding child data: $e');
     }
   }
 
-  // Save child data method
+  // Save child data with age calculation in a separate thread using compute
   Future<void> saveChildData({
     required String name,
     required DateTime bDay,
@@ -33,7 +32,8 @@ class FirebaseService {
     String collectionName = 'Level_${level}_$gender';
     var docRef = _firestore.collection(collectionName).doc();
 
-    // Create the ChildData instance with the generated ID
+
+    // Create the ChildData object without the age property (age is not stored now)
     ChildData newAccount = ChildData(
       id: docRef.id,
       name: name,
@@ -41,26 +41,43 @@ class FirebaseService {
       level: level,
       gender: gender,
       notes: notes,
-      imgUrl: imgUrl ??
-          (gender == 'G'
-              ? 'assets/images/profileG.png'
-              : 'assets/images/profileB.png'),
+      imgUrl: imgUrl ?? (gender == 'G' ? 'assets/images/profileG.png' : 'assets/images/profileB.png'),
       att: [],
       phone: phone,
     );
+
     await addChildData(newAccount);
   }
 
-  // Add child to local map by level
-  void addChild(ChildData child) {
-    if (!childrenByLevel.containsKey(child.level)) {
-      childrenByLevel[child.level] = [];
-    }
-    childrenByLevel[child.level]?.add(child);
+  // edi child data with age calculation in a separate thread using compute
+  Future<void> editChildData({
+    required String? id,
+    required String name,
+    required DateTime bDay,
+    required int level,
+    required String phone,
+    required String gender,
+    required String notes,
+    String? imgUrl,
+  }) async {
+    String collectionName = 'Level_${level}_$gender';
+    var docRef = _firestore.collection(collectionName).doc(id);
+
+
+    await docRef.update({
+      'name': name,
+      'bDay': bDay,
+      'level': level,
+      'gender': gender,
+      'notes': notes,
+      // 'imgUrl': imgUrl ?? (gender == 'G' ? 'assets/images/profileG.png' : 'assets/images/profileB.png'),
+      'att': [],
+      'phone': phone,
+    });
   }
 
-  Stream<List<ChildData>> getChildrenByLevelAndGender(int level,
-      String gender) {
+  // Get children by level and gender
+  Stream<List<ChildData>> getChildrenByLevelAndGender(int level, String gender) {
     String collectionName = 'Level_${level}_$gender';
     return _firestore.collection(collectionName).snapshots().map(
           (querySnapshot) {
@@ -69,14 +86,13 @@ class FirebaseService {
             .where((child) => child.name != null)
             .toList();
 
-        children.sort(
-                (a, b) =>
-                a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+        children.sort((a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
         return children;
       },
     );
   }
 
+  // Get children by birth month
   Stream<List<ChildData>> bDChildrenByLevelAndGender({
     required int level,
     required String gender,
@@ -95,27 +111,21 @@ class FirebaseService {
     );
   }
 
-
-  Stream<ChildData?> ChildrenById({
+  // Delete child by ID
+  Future<void> deleteChildrenById({
     required int level,
     required String gender,
-    required String id,
+    required String? id,
   }) {
     String collectionName = 'Level_${level}_$gender';
 
     return _firestore
         .collection(collectionName)
         .doc(id)
-        .snapshots()
-        .map((documentSnapshot) {
-      if (documentSnapshot.exists) {
-        return ChildData.fromJson(documentSnapshot.data()!);
-      } else {
-        return null;
-      }
-    });
+        .delete();
   }
 
+  // Save attendance for a child
   Future<void> saveAttendance({
     required String childId,
     required int level,
@@ -128,16 +138,27 @@ class FirebaseService {
 
       DocumentSnapshot docSnapshot = await docRef.get();
       if (docSnapshot.exists) {
-        ChildData child = ChildData.fromJson(docSnapshot.data() as Map<String, dynamic>);
+        var data = docSnapshot.data() as Map<String, dynamic>;
+        List<DateTime> currentAttendance = data['att'] != null
+            ? (data['att'] as List).map((e) => (e as Timestamp).toDate()).toList()
+            : [];
 
-        child.att.add(attendanceDate);
+        if (currentAttendance.any((date) =>
+        date.year == attendanceDate.year &&
+            date.month == attendanceDate.month &&
+            date.day == attendanceDate.day)) {
+          print("Attendance already exists for $childId on $attendanceDate");
+          return;
+        }
+
+        currentAttendance.add(attendanceDate);
         await docRef.update({
-          'att': child.att.map((e) => Timestamp.fromDate(e)).toList(),
+          'att': currentAttendance.map((e) => Timestamp.fromDate(e)).toList(),
         });
 
-        print("Attendance saved for ${child.name} on ${attendanceDate.toLocal()}");
+        print("Attendance saved for $childId on ${attendanceDate.toLocal()}");
       } else {
-        print("Child document does not exist.");
+        print("Child document with ID $childId does not exist.");
       }
     } catch (e) {
       print("Error saving attendance: $e");

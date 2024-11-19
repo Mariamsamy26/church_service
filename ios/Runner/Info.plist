@@ -4,6 +4,17 @@
 	<dict>
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>photo Library Access Warning</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Camera Library Access Warning</string>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>sms</string>
+			<string>tel</string>
+		</array>
+		<key>CFBundleDevelopmentRegion</key>
+		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
 		<string>Church</string>
 		<key>CFBundleExecutable</key>

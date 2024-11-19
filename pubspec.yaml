@@ -45,6 +45,7 @@ dependencies:
   table_calendar:
   permission_handler:
   url_launcher:
+  image_picker:
 
 
 dev_dependencies:
@@ -102,7 +103,6 @@ flutter:
 ######################################################
 flutter_native_splash:
   background_image: "assets/images/sp.png"
-  android_12:
-    background_image: "assets/images/sp.png"  # Use the same image for Android 12+
-
+  android: true  # تأكد من تمكين دعم Android
+  android_12: true
 

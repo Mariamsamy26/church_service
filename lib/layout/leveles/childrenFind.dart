@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../model/child.dart';
 import '../../shared/components/custom_Card.dart';
-import '../childDetailsScreen.dart';
+import '../details/childDetailsScreen.dart';
 class ChildrenFind extends StatelessWidget {
   final List<ChildData>? childrenData;
 

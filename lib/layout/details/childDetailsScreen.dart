@@ -1,14 +1,18 @@
+import 'package:church/layout/details/tableCalendar.dart';
 import 'package:church/shared/components/appBar.dart';
+import 'package:church/shared/firebase/firebase_function.dart';
 import 'package:church/shared/style/fontForm.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../model/child.dart';
-import '../shared/components/custom_ElevatedButton.dart';
-import '../shared/components/custom_Phone.dart';
-import '../shared/components/text_form_field.dart';
-import '../shared/style/color_manager.dart';
+import '../../model/child.dart';
+import '../../shared/components/custom_ElevatedButton.dart';
+import '../../shared/components/custom_Phone.dart';
+import '../../shared/components/showCustomSnackbar.dart';
+import '../../shared/components/text_form_field.dart';
+import '../../shared/style/color_manager.dart';
+import 'beleteDialog.dart';
 
 class ChildDetailsScreen extends StatefulWidget {
   final ChildData childData;
@@ -59,7 +63,23 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
       appBar: AppbarCom(
         textAPP: "تفاصيل ",
         iconApp: Icons.delete_forever,
-        onPressedApp: () {},
+        onPressedApp: () async {
+          bool? confirmDelete = await showDialog<bool>(
+            context: context,
+            builder: (BuildContext context) {
+              return DeleteDialog();
+            },
+          );
+
+          if (confirmDelete == true) {
+            await FirebaseService().deleteChildrenById(
+              level: widget.childData.level,
+              gender: widget.childData.gender,
+              id: widget.childData.id,
+            );
+            Navigator.of(context).pop();
+          }
+        },
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(
@@ -187,67 +207,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
               style: FontForm.TextStyle30bold.copyWith(
                   backgroundColor: ColorManager.colorWhit),
             ),
-            TableCalendar(
-              firstDay: DateTime.utc(2023, 11, 01),
-              lastDay: DateTime.now(),
-              focusedDay: DateTime.utc(2024, 11, 01),
-              selectedDayPredicate: (day) {
-                return day.weekday == DateTime.friday;
-              },
-              calendarStyle: CalendarStyle(
-                selectedDecoration: BoxDecoration(
-                  color: ColorManager.redSoft,
-                  // Highlight Fridays with red by default
-                  shape: BoxShape.rectangle,
-                ),
-              ),
-              headerStyle: HeaderStyle(
-                formatButtonVisible: false,
-                titleCentered: true,
-              ),
-              onDaySelected: (selectedDay, focusedDay) {
-                // Handle day selection here if needed
-              },
-              calendarBuilders: CalendarBuilders(
-                selectedBuilder: (context, date, events) {
-                  Color color = defaultColor; // Red as default for Fridays
-
-                  // Check if the date is in attendance list (att)
-                  bool isInAttendance = widget.childData.att.any(
-                      (attendanceDate) =>
-                          attendanceDate.year == date.year &&
-                          attendanceDate.month == date.month &&
-                          attendanceDate.day == date.day);
-
-                  // Apply green if date is in attendance list, else keep it red for Fridays
-                  if (isInAttendance) {
-                    color = ColorManager.greenSoft;
-                  } else if (isFriday(date)) {
-                    color =
-                        ColorManager.redSoft; // Set Fridays as red by default
-                  } else {
-                    color = ColorManager
-                        .colorWhit; // Set other days to default background color
-                  }
-
-                  return Container(
-                    margin: const EdgeInsets.all(6.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      color: color,
-                    ),
-                    child: Center(
-                      child: Text(
-                        date.day.toString(),
-                        style: FontForm.TextStyle20bold.copyWith(
-                          color: ColorManager.scondeColor,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            TableCalendarExample(attendanceDates: widget.childData.att),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -272,7 +232,21 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                     colorButton: ColorManager.primaryColor,
                     colorText: ColorManager.colorWhit,
                     text: 'حفظ',
-                    OnPressed: () async {},
+                    OnPressed: () async {
+                      FirebaseService().editChildData(
+                          id: widget.childData.id,
+                          name: nameController.text,
+                          bDay: selectedDate,
+                          level: widget.childData.level,
+                          phone: phoneController.text,
+                          gender: widget.childData.gender,
+                          notes: notesController.text);
+                      Navigator.of(context).pop();
+                      showCustomSnackbar(
+                        context: context,
+                        message: 'تم حفظ التعديلات بنجاح!',
+                      );
+                    },
                   ),
                 ),
               ],
