@@ -9,17 +9,9 @@ plugins {
 }
 
 android {
-    lintOptions {
-        checkReleaseBuilds false
-    }
-
-    compileSdkVersion 34
-    defaultConfig {
-        targetSdkVersion 34
-    }
     namespace = "com.example.church"
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
-//    multiDexEnabled true
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -36,23 +28,18 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdkVersion 23
+//        minSdk = minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        multiDexEnabled true
     }
-    dependencies {
-        implementation 'androidx.multidex:multidex:2.0.1'
-    }
-
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.debug
         }
-
     }
 }
 
