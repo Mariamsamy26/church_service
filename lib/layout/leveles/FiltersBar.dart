@@ -17,27 +17,23 @@ class FiltersBar extends StatefulWidget {
 
 class _FiltersBarState extends State<FiltersBar> {
   String? selectedMonths = '0';
-  Color buttonBorderColor = ColorManager.primaryColor;
-  Color buttonColor = ColorManager.colorWhit;
-  Color buttonColorText = ColorManager.primaryColor;
+  String selectedButton = ""; // لتحديد الزر النشط
 
   @override
   void initState() {
     super.initState();
     selectedMonths = "كل الاشهر";
-    buttonBorderColor = ColorManager.primaryColor;
-    buttonColor = ColorManager.colorWhit;
-    buttonColorText = ColorManager.primaryColor;
+    selectedButton = ""; // افتراضيًا، لا زر نشط
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: MediaQuery.of(context).size.height * 0.008),
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: MediaQuery.of(context).size.height * 0.008),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -49,31 +45,51 @@ class _FiltersBarState extends State<FiltersBar> {
               onChanged: (String? value) {
                 setState(() {
                   selectedMonths = value;
-                  if (selectedMonths != "13") {
-                    buttonBorderColor = ColorManager.primaryColor;
-                    buttonColor = ColorManager.colorWhit;
-                    buttonColorText = ColorManager.primaryColor;
-                  }
+                  selectedButton = ""; // إعادة تعيين الزر النشط
                 });
                 widget.onMonthChanged(value);
               },
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.09),
             CustomElevatedButton(
-              colorBorder: buttonBorderColor,
-              colorButton: buttonColor,
-              colorText: buttonColorText,
+              colorBorder: selectedButton == "الحضور"
+                  ? ColorManager.colorWhit
+                  : ColorManager.primaryColor,
+              colorButton: selectedButton == "الحضور"
+                  ? ColorManager.primaryColor
+                  : ColorManager.colorWhit,
+              colorText: selectedButton == "الحضور"
+                  ? ColorManager.colorWhit
+                  : ColorManager.primaryColor,
               width: MediaQuery.of(context).size.height * 0.19,
               text: 'الحضور',
               OnPressed: () {
                 setState(() {
                   widget.onMonthChanged("13");
-                  buttonBorderColor = ColorManager.colorWhit;
-                  buttonColor = ColorManager.primaryColor;
-                  buttonColorText = ColorManager.colorWhit;
+                  selectedButton = "الحضور"; // تعيين الزر النشط
                 });
               },
-            )
+            ),
+            CustomElevatedButton(
+              colorBorder: selectedButton == "الافتقاد"
+                  ? ColorManager.colorWhit
+                  : ColorManager.primaryColor,
+              colorButton: selectedButton == "الافتقاد"
+                  ? ColorManager.primaryColor
+                  : ColorManager.colorWhit,
+              colorText: selectedButton == "الافتقاد"
+                  ? ColorManager.colorWhit
+                  : ColorManager.primaryColor,
+              width: MediaQuery.of(context).size.height * 0.19,
+              text: 'الافتقاد',
+              OnPressed: () {
+                setState(() {
+                  widget.onMonthChanged("14");
+                  selectedButton = "الافتقاد"; // تعيين الزر النشط
+                });
+              },
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.09),
           ],
         ),
       ),

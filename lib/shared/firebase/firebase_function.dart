@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import '../../model/child.dart';
 
 class FirebaseService {
@@ -131,7 +132,7 @@ class FirebaseService {
     required int level,
     required String gender,
     required DateTime attendanceDate,
-    required bool state,  // إذا كانت true نضيف، وإذا كانت false نحذف
+    required bool state,
   }) async {
     try {
       String collectionName = 'Level_${level}_$gender';
@@ -173,6 +174,37 @@ class FirebaseService {
     }
   }
 
+  Stream<List<ChildData>> trakingChildren({
+    required int level,
+    required String gender,
+    required String monthStr,
+    required DateTime attendanceDate, // The specific DateTime to check
+  }) {
+    String collectionName = 'Level_${level}_$gender';
+    int month = int.tryParse(monthStr) ?? 0;
+
+    return _firestore.collection(collectionName).snapshots().map(
+          (querySnapshot) {
+        return querySnapshot.docs
+            .map((doc) => ChildData.fromJson(doc.data()))
+            .where((child) {
+          // التحقق إذا كان الطفل في الشهر المحدد
+          bool isInMonth = child.bDay != null && child.bDay!.month == month;
+
+          // التحقق من الحضور بناءً على التاريخ المحدد
+          bool isAbsentOnDate = !child.att.any((attendanceDateInAtt) {
+            // مقارنة التاريخ بشكل دقيق بين الحضور المحدد وتاريخ الحضور في البيانات
+            return attendanceDateInAtt.year == attendanceDate.year &&
+                attendanceDateInAtt.month == attendanceDate.month &&
+                attendanceDateInAtt.day == attendanceDate.day;
+          });
+
+          return isInMonth && isAbsentOnDate; // العودة بالأطفال الغائبين في هذا التاريخ
+        })
+            .toList();
+      },
+    );
+  }
 
 
 }

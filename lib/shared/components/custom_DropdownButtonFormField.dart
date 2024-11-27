@@ -7,7 +7,6 @@ class CustomDropdownButtonFormField extends StatelessWidget {
   final String labelText;
   final ValueChanged<String?> onChanged;
   final String? Function(String?)? validator;
-
   final double width;
 
   const CustomDropdownButtonFormField({
@@ -17,7 +16,7 @@ class CustomDropdownButtonFormField extends StatelessWidget {
     required this.labelText,
     required this.onChanged,
     this.validator,
-    required this.width ,
+    required this.width,
   }) : super(key: key);
 
   @override
@@ -35,11 +34,19 @@ class CustomDropdownButtonFormField extends StatelessWidget {
           }).toList(),
           onChanged: onChanged,
           decoration: InputDecoration(
+            isDense: true,
             labelText: labelText,
             enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
+              borderSide: BorderSide(
                 color: ColorManager.primaryColor,
-                width: 1.3,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: ColorManager.primaryColor, // نفس اللون للبوردر عند التركيز
+                width: 2,
               ),
               borderRadius: BorderRadius.circular(12.0),
             ),
