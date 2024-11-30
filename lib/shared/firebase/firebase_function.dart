@@ -161,6 +161,7 @@ class FirebaseService {
               date.day == attendanceDate.day);
         }
 
+        // Ensure data is updated correctly
         await docRef.update({
           'att': currentAttendance.map((e) => Timestamp.fromDate(e)).toList(),
         });
@@ -173,6 +174,7 @@ class FirebaseService {
       print("Error saving attendance: $e");
     }
   }
+
 
   Stream<List<ChildData>> trakingChildren({
     required int level,
