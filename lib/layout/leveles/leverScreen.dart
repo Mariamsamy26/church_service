@@ -37,7 +37,6 @@ class LeverScreen extends StatelessWidget {
               children: [
                 FiltersBar(
                   onMonthChanged: (month) {
-                    // تحديث الشهر في المزود
                     childrenProvider.updateMonthFilter(month);
                   },
                 ),
@@ -50,11 +49,16 @@ class LeverScreen extends StatelessWidget {
                       }
 
                       if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(
-                          child: Text(
-                            "No children data available",
-                            style: FontForm.TextStyle50bold,
-                          ),
+                        return childrenProvider.selectedMonth == "14"
+                            ? Text(
+                          "مفيش غياب اليوم ده \n😎",
+                          style: FontForm.TextStyle50bold,
+                          textAlign: TextAlign.center,
+                        )
+                            : Text(
+                          "يمكن تضيف عيال المرحله ديه \n🌚.. ",
+                          style: FontForm.TextStyle50bold,
+                          textAlign: TextAlign.center,
                         );
                       }
 
