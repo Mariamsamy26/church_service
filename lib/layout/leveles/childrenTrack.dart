@@ -1,12 +1,14 @@
+import 'package:church/shared/style/fontForm.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // For date formatting
+import 'package:intl/intl.dart';
 import '../../model/child.dart';
 import '../../shared/components/custom_Card.dart';
+import '../../shared/style/color_manager.dart';
 import '../childDetailsScreen.dart';
 
 class ChildrenTrack extends StatefulWidget {
-  final DateTime initialDay; // Initial selected day
-  final Function(DateTime) onDayChanged; // Callback to notify day change
+  final DateTime initialDay;
+  final Function(DateTime) onDayChanged;
   final List<ChildData>? childrenData;
 
   const ChildrenTrack({
@@ -21,30 +23,44 @@ class ChildrenTrack extends StatefulWidget {
 }
 
 class _ChildrenTrackState extends State<ChildrenTrack> {
-  late DateTime selectedDay;
+  late DateTime selectedDate;
 
 
   @override
   void initState() {
     super.initState();
-    selectedDay = widget.initialDay;
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   _showDatePicker();
-    // });
+    selectedDate = widget.initialDay;
   }
 
   Future<void> _showDatePicker() async {
-    DateTime? pickedDate = await showDatePicker(
+    DateTime? chosenDate = await showDatePicker(
       context: context,
-      initialDate: selectedDay,
       firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
+      lastDate: DateTime.now(),
+      initialDate: selectedDate,
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: ColorManager.liteblueGray,
+              onSurface: ColorManager.scondeColor,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor:
+                ColorManager.liteblueGray,
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
-    if (pickedDate != null && pickedDate != selectedDay) {
+    if (chosenDate != null && chosenDate != selectedDate) {
       setState(() {
-        selectedDay = pickedDate;
+        selectedDate = chosenDate;
       });
-      widget.onDayChanged(pickedDate); // إعلام الشاشة الرئيسية بتغيير اليوم
+      widget.onDayChanged(chosenDate);
     }
   }
 
@@ -52,20 +68,24 @@ class _ChildrenTrackState extends State<ChildrenTrack> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Display the selected date and a button to show the calendar
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.height * 0.02,
+            vertical: MediaQuery.of(context).size.height * 0.01,
+          ),
           child: Row(
+
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Selected Date: ${DateFormat('dd/MM/yyyy').format(selectedDay)}',
-                style: TextStyle(fontSize: 18),
-              ),
               IconButton(
-                icon: Icon(Icons.calendar_today),
+                icon: Icon(Icons.calendar_month_sharp,color: ColorManager.liteblueGray,size: 35,),
                 onPressed: _showDatePicker,
               ),
+              Text(
+                '${DateFormat('dd/MM/yyyy').format(selectedDate)}  : الغياب يوم   ',
+                style: FontForm.TextStyle30bold,
+              ),
+
             ],
           ),
         ),

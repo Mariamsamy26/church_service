@@ -60,7 +60,6 @@ class LeverScreen extends StatelessWidget {
 
                       var childrenData = snapshot.data;
 
-                      // عرض المكونات بناءً على الشهر المحدد
                       if (childrenProvider.selectedMonth == "13") {
                         return ChildrenAtt(
                           onMonthChanged: (month) {

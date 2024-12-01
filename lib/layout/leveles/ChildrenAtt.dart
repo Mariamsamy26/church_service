@@ -11,9 +11,11 @@ class ChildrenAtt extends StatefulWidget {
   final ValueChanged<String?> onMonthChanged;
   final List<ChildData>? childrenData;
 
-  const ChildrenAtt(
-      {Key? key, required this.childrenData, required this.onMonthChanged})
-      : super(key: key);
+  const ChildrenAtt({
+    super.key,
+    required this.childrenData,
+    required this.onMonthChanged,
+  });
 
   @override
   _ChildrenAttState createState() => _ChildrenAttState();
@@ -22,6 +24,22 @@ class ChildrenAtt extends StatefulWidget {
 class _ChildrenAttState extends State<ChildrenAtt> {
   String dayToday = DateFormat('dd/MM/yyyy').format(DateTime.now());
   Map<String, bool> attendanceSelection = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeAttendanceSelection();
+  }
+
+  void _initializeAttendanceSelection() {
+    for (var child in widget.childrenData ?? []) {
+      attendanceSelection[child.id ?? ""] = child.att.any((entry) {
+        return entry.year == DateTime.now().year &&
+            entry.month == DateTime.now().month &&
+            entry.day == DateTime.now().day;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,36 +55,22 @@ class _ChildrenAttState extends State<ChildrenAtt> {
           itemCount: widget.childrenData?.length,
           itemBuilder: (context, index) {
             var child = widget.childrenData?[index];
-            bool isSelected = attendanceSelection[child?.id ?? ""] ??
-                (child?.att.any((entry) {
-                  return entry.year == DateTime.now().year &&
-                      entry.month == DateTime.now().month &&
-                      entry.day == DateTime.now().day;
-                })) ??
-                false;
+            bool isSelected = attendanceSelection[child?.id ?? ""] ?? false;
 
             return CustomCard(
-                profileImage: child?.imgUrl ?? "",
-                name: child?.name ?? "Unknown",
-                phone: child?.phone ?? "Unknown",
-                id: child?.id ?? "N/A",
-                icon: isSelected
-                    ? Icons.check_box
-                    : Icons.check_box_outline_blank_rounded,
-                iconFunction: () {
-                  setState(() {
-                    isSelected = !isSelected;
-                    attendanceSelection[child?.id ?? ""] = isSelected;
-                    if (isSelected) {
-                      child?.att.add(DateTime.now());
-                    } else {
-                      child?.att.removeWhere((date) =>
-                          date.year == DateTime.now().year &&
-                          date.month == DateTime.now().month &&
-                          date.day == DateTime.now().day);
-                    }
-                  });
+              profileImage: child?.imgUrl ?? "",
+              name: child?.name ?? "Unknown",
+              phone: child?.phone ?? "Unknown",
+              id: child?.id ?? "N/A",
+              icon: isSelected
+                  ? Icons.check_box
+                  : Icons.check_box_outline_blank_rounded,
+              iconFunction: () {
+                setState(() {
+                  attendanceSelection[child?.id ?? ""] = !isSelected;
                 });
+              },
+            );
           },
         ),
         Row(
@@ -80,8 +84,6 @@ class _ChildrenAttState extends State<ChildrenAtt> {
                         DateFormat('dd/MM/yyyy').parse(dayToday);
                     bool state = attendanceSelection[child.id ?? ""] ?? false;
 
-                    print("Saving attendance for child ${child.id}: $state");
-
                     await FirebaseService().saveAttendance(
                       childId: child.id,
                       level: child.level,
@@ -89,17 +91,25 @@ class _ChildrenAttState extends State<ChildrenAtt> {
                       attendanceDate: attendanceDate,
                       state: state,
                     );
+
+                    if (state) {
+                      child.att.add(attendanceDate);
+                    } else {
+                      child.att.removeWhere((date) =>
+                          date.year == DateTime.now().year &&
+                          date.month == DateTime.now().month &&
+                          date.day == DateTime.now().day);
+                    }
                   }
 
-                  // عرض رسالة نجاح
                   widget.onMonthChanged("كل الاشهر");
+
                   showCustomSnackbar(
                     context: context,
                     message: 'تم تحديث الحضور بنجاح!',
                     backgroundColor: ColorManager.greenSoft,
                   );
                 } catch (e) {
-                  print("Error saving attendance: $e");
                   showCustomSnackbar(
                     context: context,
                     message: 'حدث خطأ أثناء تحديث الحضور: $e',

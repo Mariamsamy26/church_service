@@ -17,13 +17,13 @@ class FiltersBar extends StatefulWidget {
 
 class _FiltersBarState extends State<FiltersBar> {
   String? selectedMonths = '0';
-  String selectedButton = ""; // لتحديد الزر النشط
+  String selectedButton = "";
 
   @override
   void initState() {
     super.initState();
     selectedMonths = "كل الاشهر";
-    selectedButton = ""; // افتراضيًا، لا زر نشط
+    selectedButton = "";
   }
 
   @override
@@ -38,14 +38,14 @@ class _FiltersBarState extends State<FiltersBar> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             CustomDropdownButtonFormField(
-              width: MediaQuery.of(context).size.width * 0.35,
+              width: MediaQuery.of(context).size.width * 0.30,
               selectedValue: selectedMonths,
               items: DataApp.months,
               labelText: "شهر عيد الميلاد",
               onChanged: (String? value) {
                 setState(() {
                   selectedMonths = value;
-                  selectedButton = ""; // إعادة تعيين الزر النشط
+                  selectedButton = "";
                 });
                 widget.onMonthChanged(value);
               },
@@ -66,7 +66,7 @@ class _FiltersBarState extends State<FiltersBar> {
               OnPressed: () {
                 setState(() {
                   widget.onMonthChanged("13");
-                  selectedButton = "الحضور"; // تعيين الزر النشط
+                  selectedButton = "الحضور";
                 });
               },
             ),
@@ -85,7 +85,7 @@ class _FiltersBarState extends State<FiltersBar> {
               OnPressed: () {
                 setState(() {
                   widget.onMonthChanged("14");
-                  selectedButton = "الافتقاد"; // تعيين الزر النشط
+                  selectedButton = "الافتقاد";
                 });
               },
             ),

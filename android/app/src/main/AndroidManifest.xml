@@ -16,7 +16,7 @@
     </queries>
 
     <application
-        android:label="church"
+        android:label="خدمه اعدادي"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
