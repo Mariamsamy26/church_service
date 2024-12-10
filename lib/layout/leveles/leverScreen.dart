@@ -47,13 +47,15 @@ class LeverScreen extends StatelessWidget {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       }
-
-                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      var childrenData = snapshot.data;
+                      if (snapshot.data == null || snapshot.data!.isEmpty) {
                         return childrenProvider.selectedMonth == "14"
-                            ? Text(
-                          "مفيش غياب اليوم ده \n😎",
-                          style: FontForm.TextStyle50bold,
-                          textAlign: TextAlign.center,
+                            ? ChildrenTrack(
+                          initialDay: childrenProvider.selectedDayTrack,
+                          onDayChanged: (DateTime day) {
+                            childrenProvider.updateTrackingDate(day);
+                          },
+                          childrenData: childrenData,
                         )
                             : Text(
                           "يمكن تضيف عيال المرحله ديه \n🌚.. ",
@@ -62,7 +64,6 @@ class LeverScreen extends StatelessWidget {
                         );
                       }
 
-                      var childrenData = snapshot.data;
 
                       if (childrenProvider.selectedMonth == "13") {
                         return ChildrenAtt(
@@ -73,15 +74,15 @@ class LeverScreen extends StatelessWidget {
                         );
                       }
 
-                      if (childrenProvider.selectedMonth == "14") {
-                        return ChildrenTrack(
-                          initialDay: childrenProvider.selectedDayTrack,
-                          onDayChanged: (DateTime day) {
-                            childrenProvider.updateTrackingDate(day);
-                          },
-                          childrenData: childrenData,
-                        );
-                      }
+                      // if (childrenProvider.selectedMonth == "14") {
+                      //   return ChildrenTrack(
+                      //     initialDay: childrenProvider.selectedDayTrack,
+                      //     onDayChanged: (DateTime day) {
+                      //       childrenProvider.updateTrackingDate(day);
+                      //     },
+                      //     childrenData: childrenData,
+                      //   );
+                      // }
 
                       // العرض الافتراضي
                       return ChildrenFind(childrenData: childrenData);
