@@ -38,7 +38,7 @@ class _FiltersBarState extends State<FiltersBar> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             CustomDropdownButtonFormField(
-              width: MediaQuery.of(context).size.width * 0.35,
+              width: MediaQuery.of(context).size.width * 0.30,
               selectedValue: selectedMonths,
               items: DataApp.months,
               labelText: "شهر عيد الميلاد",
