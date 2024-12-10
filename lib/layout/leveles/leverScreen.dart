@@ -37,7 +37,6 @@ class LeverScreen extends StatelessWidget {
               children: [
                 FiltersBar(
                   onMonthChanged: (month) {
-                    // تحديث الشهر في المزود
                     childrenProvider.updateMonthFilter(month);
                   },
                 ),
@@ -48,17 +47,23 @@ class LeverScreen extends StatelessWidget {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       }
-
-                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(
-                          child: Text(
-                            "No children data available",
-                            style: FontForm.TextStyle50bold,
-                          ),
+                      var childrenData = snapshot.data;
+                      if (snapshot.data == null || snapshot.data!.isEmpty) {
+                        return childrenProvider.selectedMonth == "14"
+                            ? ChildrenTrack(
+                          initialDay: childrenProvider.selectedDayTrack,
+                          onDayChanged: (DateTime day) {
+                            childrenProvider.updateTrackingDate(day);
+                          },
+                          childrenData: childrenData,
+                        )
+                            : Text(
+                          "يمكن تضيف عيال المرحله ديه \n🌚.. ",
+                          style: FontForm.TextStyle50bold,
+                          textAlign: TextAlign.center,
                         );
                       }
 
-                      var childrenData = snapshot.data;
 
                       if (childrenProvider.selectedMonth == "13") {
                         return ChildrenAtt(
@@ -69,15 +74,6 @@ class LeverScreen extends StatelessWidget {
                         );
                       }
 
-                      if (childrenProvider.selectedMonth == "14") {
-                        return ChildrenTrack(
-                          initialDay: childrenProvider.selectedDayTrack,
-                          onDayChanged: (DateTime day) {
-                            childrenProvider.updateTrackingDate(day);
-                          },
-                          childrenData: childrenData,
-                        );
-                      }
 
                       // العرض الافتراضي
                       return ChildrenFind(childrenData: childrenData);

@@ -25,7 +25,6 @@ class ChildrenTrack extends StatefulWidget {
 class _ChildrenTrackState extends State<ChildrenTrack> {
   late DateTime selectedDate;
 
-
   @override
   void initState() {
     super.initState();
@@ -47,8 +46,7 @@ class _ChildrenTrackState extends State<ChildrenTrack> {
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor:
-                ColorManager.liteblueGray,
+                foregroundColor: ColorManager.liteblueGray,
               ),
             ),
           ),
@@ -74,48 +72,56 @@ class _ChildrenTrackState extends State<ChildrenTrack> {
             vertical: MediaQuery.of(context).size.height * 0.01,
           ),
           child: Row(
-
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: Icon(Icons.calendar_month_sharp,color: ColorManager.liteblueGray,size: 35,),
+                icon: Icon(
+                  Icons.calendar_month_sharp,
+                  color: ColorManager.liteblueGray,
+                  size: 35,
+                ),
                 onPressed: _showDatePicker,
               ),
               Text(
                 '${DateFormat('dd/MM/yyyy').format(selectedDate)}  : الغياب يوم   ',
                 style: FontForm.TextStyle30bold,
               ),
-
             ],
           ),
         ),
 
         // List of children that match the selected date
-        Expanded(
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: widget.childrenData?.length ?? 0,
-            itemBuilder: (context, index) {
-              var child = widget.childrenData?[index];
-              return CustomCard(
-                profileImage: child!.imgUrl.toString(),
-                name: child.name!,
-                phone: child.phone,
-                id: child.id ?? "N/A",
-                icon: Icons.info_rounded,
-                iconFunction: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ChildDetailsScreen(childData: child),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        ),
+        widget.childrenData != null
+            ? Text(
+                "مفيش غياب اليوم ده \n😎",
+                style: FontForm.TextStyle50bold,
+                textAlign: TextAlign.center,
+              )
+            : Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: widget.childrenData?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    var child = widget.childrenData?[index];
+                    return CustomCard(
+                      profileImage: child!.imgUrl.toString(),
+                      name: child.name!,
+                      phone: child.phone,
+                      id: child.id ?? "N/A",
+                      icon: Icons.info_rounded,
+                      iconFunction: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ChildDetailsScreen(childData: child),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
       ],
     );
   }
