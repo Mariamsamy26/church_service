@@ -16,7 +16,7 @@
     </queries>
 
     <application
-        android:label="خدمه اعدادي"
+        android:label="خدمه ثانوي"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

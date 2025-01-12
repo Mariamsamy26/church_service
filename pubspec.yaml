@@ -73,7 +73,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-  #   - images/a_dot_ham.jpeg
+    - assets/images/sp.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -103,6 +103,8 @@ flutter:
 ######################################################
 flutter_native_splash:
   background_image: "assets/images/sp.png"
-  android: true  # تأكد من تمكين دعم Android
-  android_12: true
+  android: true
+  ios: true
+  android_12:
+    image: "assets/images/sp.png"
 
