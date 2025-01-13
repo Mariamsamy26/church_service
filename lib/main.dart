@@ -17,7 +17,6 @@ Future<void> main() async {
         ChangeNotifierProvider(
           create: (_) => ChildrenProvider(level: 0, gender: ''), // Initialize ChildrenProvider
         ),
-        // Uncomment if needed
         // ChangeNotifierProvider(create: (_) => ImageProviderNotifier()),
       ],
       child: const MyApp(),

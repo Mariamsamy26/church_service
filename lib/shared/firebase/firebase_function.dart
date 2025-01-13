@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
+import 'package:rxdart/rxdart.dart';
 import '../../model/child.dart';
 
 class FirebaseService {
@@ -77,17 +77,41 @@ class FirebaseService {
     });
   }
 
+  // Get children gender
+  Stream<List<ChildData>> getChildrenByGender(String gender) {
+    List<int> levels = [1, 2, 3];
+    return Rx.combineLatestList(
+      levels.map((level) {
+        String collectionName = 'Level_${level}_$gender';
+        return _firestore.collection(collectionName).snapshots().map(
+              (querySnapshot) => querySnapshot.docs
+                  .map((doc) => ChildData.fromJson(doc.data()))
+                  .where((child) => child.name != null)
+                  .toList(),
+            );
+      }),
+    ).map((listOfLists) {
+      var children = listOfLists.expand((list) => list).toList();
+
+      children.sort(
+          (a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+      return children;
+    });
+  }
+
   // Get children by level and gender
-  Stream<List<ChildData>> getChildrenByLevelAndGender(int level, String gender) {
+  Stream<List<ChildData>> getChildrenByLevelAndGender(
+      int level, String gender) {
     String collectionName = 'Level_${level}_$gender';
     return _firestore.collection(collectionName).snapshots().map(
-          (querySnapshot) {
+      (querySnapshot) {
         var children = querySnapshot.docs
             .map((doc) => ChildData.fromJson(doc.data()))
             .where((child) => child.name != null)
             .toList();
 
-        children.sort((a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+        children.sort(
+            (a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
         return children;
       },
     );

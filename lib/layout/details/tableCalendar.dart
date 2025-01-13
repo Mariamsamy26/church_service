@@ -17,12 +17,12 @@ class TableCalendarExample extends StatelessWidget {
     return TableCalendar(
       firstDay: DateTime.utc(2023, 11, 01),
       lastDay: DateTime.now(),
-      focusedDay: DateTime.utc(2024, 11, 01),
+      focusedDay: DateTime.now(),
       selectedDayPredicate: (day) {
         bool isFriday = day.weekday == DateTime.friday;
         bool isInAttendance = attendanceDates.any(
-              (attendanceDate) =>
-          attendanceDate.year == day.year &&
+          (attendanceDate) =>
+              attendanceDate.year == day.year &&
               attendanceDate.month == day.month &&
               attendanceDate.day == day.day,
         );

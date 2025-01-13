@@ -8,9 +8,14 @@ class ChildrenProvider extends ChangeNotifier {
   final int level;
   final String gender;
   String selectedMonth = "كل الاشهر"; // Default to "All months"
-  DateTime selectedDayTrack = DateTime.now(); // For tracking attendance by specific date
+  DateTime selectedDayTrack =
+      DateTime.now(); // For tracking attendance by specific date
 
   ChildrenProvider({required this.level, required this.gender});
+
+  Stream<List<ChildData>> childrenAllAtt(String gender) {
+    return FirebaseService().getChildrenByGender(gender);
+  }
 
   // Function to get the stream based on the selected filter
   Stream<List<ChildData>> get childrenStream {

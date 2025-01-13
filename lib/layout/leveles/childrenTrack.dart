@@ -64,62 +64,64 @@ class _ChildrenTrackState extends State<ChildrenTrack> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.height * 0.02,
-            vertical: MediaQuery.of(context).size.height * 0.01,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: Icon(
-                  Icons.calendar_month_sharp,
-                  color: ColorManager.liteblueGray,
-                  size: 35,
-                ),
-                onPressed: _showDatePicker,
+        Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.height * 0.02,
+                vertical: MediaQuery.of(context).size.height * 0.01,
               ),
-              Text(
-                '${DateFormat('dd/MM/yyyy').format(selectedDate)}  : الغياب يوم   ',
-                style: FontForm.TextStyle30bold,
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: widget.childrenData == null || widget.childrenData!.isEmpty
-              ? Center(
-                  child: Text(
-                    "مفيش غياب اليوم ده \n😎",
-                    style: FontForm.TextStyle50bold,
-                    textAlign: TextAlign.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.calendar_month_sharp,
+                      color: ColorManager.liteblueGray,
+                      size: 35,
+                    ),
+                    onPressed: _showDatePicker,
                   ),
-                )
-              : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: widget.childrenData!.length,
-                  itemBuilder: (context, index) {
-                    var child = widget.childrenData![index];
-                    return CustomCard(
-                      profileImage: child.imgUrl.toString(),
-                      name: child.name!,
-                      phone: child.phone,
-                      id: child.id ?? "N/A",
-                      icon: Icons.info_rounded,
-                      iconFunction: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ChildDetailsScreen(childData: child),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
+                  Text(
+                    '${DateFormat('dd/MM/yyyy').format(selectedDate)}  : الغياب يوم   ',
+                    style: FontForm.TextStyle30bold,
+                  ),
+                ],
+              ),
+            ),
+            widget.childrenData == null || widget.childrenData!.isEmpty
+                ? Center(
+                    child: Text(
+                      "مفيش غياب اليوم ده \n😎",
+                      style: FontForm.TextStyle50bold,
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: widget.childrenData!.length,
+                    itemBuilder: (context, index) {
+                      var child = widget.childrenData![index];
+                      return CustomCard(
+                        profileImage: child.imgUrl.toString(),
+                        name: child.name!,
+                        phone: child.phone,
+                        id: child.id ?? "N/A",
+                        icon: Icons.info_rounded,
+                        iconFunction: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ChildDetailsScreen(childData: child),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+          ],
         ),
       ],
     );

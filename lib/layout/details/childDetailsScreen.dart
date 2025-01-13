@@ -27,15 +27,16 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
   late TextEditingController bDayController;
   late TextEditingController notesController;
   late TextEditingController phoneController;
-  DateTime selectedDate = DateTime.now();
+  late DateTime selectedDate;
   Color defaultColor = ColorManager.redSoft;
 
   @override
   void initState() {
     super.initState();
+    selectedDate = widget.childData.bDay ?? DateTime.now();
     nameController = TextEditingController(text: widget.childData.name);
     bDayController = TextEditingController(
-        text: DateFormat('dd/MM/yyyy').format(widget.childData.bDay!));
+        text: DateFormat('dd/MM/yyyy').format(selectedDate));
     notesController = TextEditingController(text: widget.childData.notes);
     phoneController = TextEditingController(text: widget.childData.phone);
   }
@@ -129,29 +130,13 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                     firstDate: DateTime(2000),
                     lastDate: DateTime.now(),
                     initialDate: selectedDate,
-                    builder: (BuildContext context, Widget? child) {
-                      return Theme(
-                        data: Theme.of(context).copyWith(
-                          colorScheme: ColorScheme.light(
-                            primary: ColorManager.liteblueGray,
-                            onSurface: ColorManager.scondeColor,
-                          ),
-                          textButtonTheme: TextButtonThemeData(
-                            style: TextButton.styleFrom(
-                              foregroundColor: ColorManager.liteblueGray,
-                            ),
-                          ),
-                        ),
-                        child: child!,
-                      );
-                    },
                   );
                   if (chosenDate != null) {
-                    selectedDate = chosenDate;
-                    String formattedDate =
-                        DateFormat('dd/MM/yyyy').format(chosenDate);
-                    bDayController.text = formattedDate;
-                    setState(() {});
+                    setState(() {
+                      selectedDate = chosenDate;
+                      bDayController.text =
+                          DateFormat('dd/MM/yyyy').format(selectedDate);
+                    });
                   }
                 },
                 icon: Icon(
@@ -198,7 +183,6 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                  flex: 1,
                   child: CustomElevatedButton(
                     colorBorder: ColorManager.primaryColor,
                     colorButton: ColorManager.colorWhit,
@@ -211,21 +195,21 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  flex: 1,
                   child: CustomElevatedButton(
                     colorBorder: ColorManager.primaryColor,
                     colorButton: ColorManager.primaryColor,
                     colorText: ColorManager.colorWhit,
                     text: 'حفظ',
                     OnPressed: () async {
-                      FirebaseService().editChildData(
-                          id: widget.childData.id,
-                          name: nameController.text,
-                          bDay: selectedDate,
-                          level: widget.childData.level,
-                          phone: phoneController.text,
-                          gender: widget.childData.gender,
-                          notes: notesController.text);
+                      await FirebaseService().editChildData(
+                        id: widget.childData.id,
+                        name: nameController.text,
+                        bDay: selectedDate,
+                        level: widget.childData.level,
+                        phone: phoneController.text,
+                        gender: widget.childData.gender,
+                        notes: notesController.text,
+                      );
                       Navigator.of(context).pop();
                       showCustomSnackbar(
                         context: context,

@@ -23,6 +23,7 @@ class LeverScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var pro = Provider.of<ChildrenProvider>(context);
     return ChangeNotifierProvider(
       create: (context) => ChildrenProvider(level: level, gender: gender),
       child: Scaffold(
@@ -83,7 +84,8 @@ class LeverScreen extends StatelessWidget {
                         );
                       }
 
-                      return ChildrenFind(childrenData: childrenData);
+                      return SingleChildScrollView(
+                          child: ChildrenFind(childrenData: childrenData));
                     },
                   ),
                 ),
