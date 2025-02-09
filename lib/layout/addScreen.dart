@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:church/shared/firebase/firebase_function.dart';
 import 'package:church/shared/style/color_manager.dart';
 import 'package:flutter/material.dart';
+import '../shared/components/customDatePicker.dart';
 import '../shared/components/custom_DropdownButtonFormField.dart';
 import '../shared/components/custom_ElevatedButton.dart';
 import '../shared/components/showCustomSnackbar.dart';
@@ -17,21 +18,19 @@ class AddScreen extends StatefulWidget {
 }
 
 class _AddScreenState extends State<AddScreen> {
-  DateTime selectedDate = DateTime.now();
+  DateTime? selectedDate;
   var nameController = TextEditingController();
   var phoneController = TextEditingController();
   var bDayController = TextEditingController();
   var notesController = TextEditingController();
-
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
   String? selectedLevel;
   String? selectedGender;
 
   @override
   Widget build(BuildContext context) {
     final Widget betwwen =
-    SizedBox(height: MediaQuery.of(context).size.height * 0.025);
+        SizedBox(height: MediaQuery.of(context).size.height * 0.025);
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -44,24 +43,20 @@ class _AddScreenState extends State<AddScreen> {
             ),
             Padding(
               padding: EdgeInsets.symmetric(
-                  horizontal: 5, vertical: MediaQuery.of(context).size.height * 0.05),
+                  horizontal: 5,
+                  vertical: MediaQuery.of(context).size.height * 0.05),
               child: Form(
                 key: formKey,
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // zCustomImg(icon: Icons.add_a_photo),
                       betwwen,
                       AppTextFormField(
                         controller: nameController,
                         hintText: "الاسم ",
-                        validator: (text) {
-                          if (text?.isEmpty ?? true) {
-                            return "اكتب اسم المخدوم ";
-                          }
-                          return null;
-                        },
+                        validator: (text) =>
+                            text?.isEmpty ?? true ? "اكتب اسم المخدوم " : null,
                         backgroundColor: ColorManager.colorWhit,
                         label: 'الاسم',
                       ),
@@ -86,57 +81,14 @@ class _AddScreenState extends State<AddScreen> {
                         ],
                       ),
                       betwwen,
-                      AppTextFormField(
-                        controller: bDayController,
-                        suffixIcon: IconButton(
-                          onPressed: () async {
-                            DateTime? chosenDate = await showDatePicker(
-                              context: context,
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime.now(),
-                              initialDate: selectedDate,
-                              builder: (BuildContext context, Widget? child) {
-                                return Theme(
-                                  data: Theme.of(context).copyWith(
-                                    colorScheme: ColorScheme.light(
-                                      primary: ColorManager.liteblueGray,
-                                      onSurface: ColorManager.scondeColor,
-                                    ),
-                                    textButtonTheme: TextButtonThemeData(
-                                      style: TextButton.styleFrom(
-                                        foregroundColor:
-                                        ColorManager.liteblueGray,
-                                      ),
-                                    ),
-                                  ),
-                                  child: child!,
-                                );
-                              },
-                            );
-                            if (chosenDate != null) {
-                              selectedDate = chosenDate;
-                              String formattedDate =
-                              DateFormat('dd/MM/yyyy').format(chosenDate);
-                              bDayController.text =
-                                  formattedDate;
-                              setState(() {});
-                            }
-                          },
-                          icon: Icon(
-                            Icons.calendar_month_sharp,
-                            color: ColorManager.scondeColor,
-                          ),
-                        ),
-                        hintText: "تاريخ الميلاد",
-                        validator: (text) {
-                          if (text?.isEmpty ?? true) {
-                            return "اكتب تاريخ الميلاد";
-                          }
-                          return null;
+                      CustomDatePicker(
+                        onDateChanged: (DateTime date) {
+                          setState(() {
+                            selectedDate = date;
+                            bDayController.text =
+                                DateFormat('dd/MM/yyyy').format(date);
+                          });
                         },
-                        backgroundColor: ColorManager.colorWhit,
-                        label: 'تاريخ الميلاد',
-                        readOnly: true,
                       ),
                       betwwen,
                       CustomDropdownButtonFormField(
@@ -149,12 +101,10 @@ class _AddScreenState extends State<AddScreen> {
                             selectedLevel = value;
                           });
                         },
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "الرجاء اختيار المستوى";
-                          }
-                          return null;
-                        },
+                        validator: (String? value) =>
+                            value == null || value.isEmpty
+                                ? "الرجاء اختيار المستوى"
+                                : null,
                       ),
                       betwwen,
                       CustomDropdownButtonFormField(
@@ -167,18 +117,16 @@ class _AddScreenState extends State<AddScreen> {
                             selectedGender = value;
                           });
                         },
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "الرجاء اختيار الجنس";
-                          }
-                          return null;
-                        },
+                        validator: (String? value) =>
+                            value == null || value.isEmpty
+                                ? "الرجاء اختيار الجنس"
+                                : null,
                       ),
                       betwwen,
                       AppTextFormField(
                         controller: notesController,
                         hintText: "ملاحظات إضافية ",
-                        validator: (text) {},
+                        validator: (text) => null,
                         backgroundColor: ColorManager.colorWhit,
                         label: 'ملاحظات',
                       ),
@@ -208,42 +156,42 @@ class _AddScreenState extends State<AddScreen> {
                               text: 'حفظ',
                               OnPressed: () async {
                                 if (formKey.currentState!.validate()) {
-                                  if (selectedLevel == null || selectedGender == null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('الرجاء اختيار المستوى والجنس')),
+                                  if (selectedDate == null) {
+                                    showCustomSnackbar(
+                                      context: context,
+                                      message: 'الرجاء اختيار تاريخ الميلاد',
+                                      backgroundColor: Colors.red,
                                     );
                                     return;
                                   }
-
-                                  DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(bDayController.text);
-
-                                  String genderCode = selectedGender == "ولد" ? "B" : "G";
-                                  int levelIndex = DataApp.level.indexOf(selectedLevel!);
-
                                   try {
                                     await FirebaseService().saveChildData(
                                       phone: phoneController.text,
                                       name: nameController.text,
-                                      bDay: parsedDate,
-                                      level: levelIndex + 1,
-                                      gender: genderCode,
+                                      bDay: selectedDate!,
+                                      level: DataApp.level
+                                              .indexOf(selectedLevel!) +
+                                          1,
+                                      gender:
+                                          selectedGender == "ولد" ? "B" : "G",
                                       notes: notesController.text,
                                     );
-
                                     Navigator.pop(context);
                                     showCustomSnackbar(
                                       context: context,
-                                      message: 'تم المخدوم!',
-                                      backgroundColor: ColorManager.primaryColor,
+                                      message: 'تم حفظ المخدوم!',
+                                      backgroundColor:
+                                          ColorManager.primaryColor,
                                     );
                                   } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('خطأ في حفظ البيانات: $e')),
+                                    showCustomSnackbar(
+                                      context: context,
+                                      message: 'خطأ في حفظ البيانات: $e',
+                                      backgroundColor: Colors.red,
                                     );
                                   }
                                 }
                               },
-
                             ),
                           ),
                         ],

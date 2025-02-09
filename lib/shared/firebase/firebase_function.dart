@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 import '../../model/child.dart';
+import '../../model/event.dart';
 
 class FirebaseService {
   Map<int, List<ChildData>> childrenByLevel = {};
@@ -33,7 +34,6 @@ class FirebaseService {
     String collectionName = 'Level_${level}_$gender';
     var docRef = _firestore.collection(collectionName).doc();
 
-
     // Create the ChildData object without the age property (age is not stored now)
     ChildData newAccount = ChildData(
       id: docRef.id,
@@ -42,7 +42,10 @@ class FirebaseService {
       level: level,
       gender: gender,
       notes: notes,
-      imgUrl: imgUrl ?? (gender == 'G' ? 'assets/images/profileG.png' : 'assets/images/profileB.png'),
+      imgUrl: imgUrl ??
+          (gender == 'G'
+              ? 'assets/images/profileG.png'
+              : 'assets/images/profileB.png'),
       att: [],
       phone: phone,
     );
@@ -63,7 +66,6 @@ class FirebaseService {
   }) async {
     String collectionName = 'Level_${level}_$gender';
     var docRef = _firestore.collection(collectionName).doc(id);
-
 
     await docRef.update({
       'name': name,
@@ -144,10 +146,7 @@ class FirebaseService {
   }) {
     String collectionName = 'Level_${level}_$gender';
 
-    return _firestore
-        .collection(collectionName)
-        .doc(id)
-        .delete();
+    return _firestore.collection(collectionName).doc(id).delete();
   }
 
   // Save attendance for a child
@@ -166,7 +165,9 @@ class FirebaseService {
       if (docSnapshot.exists) {
         var data = docSnapshot.data() as Map<String, dynamic>;
         List<DateTime> currentAttendance = data['att'] != null
-            ? (data['att'] as List).map((e) => (e as Timestamp).toDate()).toList()
+            ? (data['att'] as List)
+                .map((e) => (e as Timestamp).toDate())
+                .toList()
             : [];
 
         if (state) {
@@ -180,7 +181,7 @@ class FirebaseService {
           currentAttendance.add(attendanceDate);
         } else {
           currentAttendance.removeWhere((date) =>
-          date.year == attendanceDate.year &&
+              date.year == attendanceDate.year &&
               date.month == attendanceDate.month &&
               date.day == attendanceDate.day);
         }
@@ -190,7 +191,8 @@ class FirebaseService {
           'att': currentAttendance.map((e) => Timestamp.fromDate(e)).toList(),
         });
 
-        print("Attendance ${state ? 'added' : 'removed'} for $childId on ${attendanceDate.toLocal()}");
+        print(
+            "Attendance ${state ? 'added' : 'removed'} for $childId on ${attendanceDate.toLocal()}");
       } else {
         print("Child document with ID $childId does not exist.");
       }
@@ -198,7 +200,6 @@ class FirebaseService {
       print("Error saving attendance: $e");
     }
   }
-
 
   Stream<List<ChildData>> trakingChildren({
     required int level,
@@ -214,7 +215,8 @@ class FirebaseService {
         return querySnapshot.docs
             .map((doc) => ChildData.fromJson(doc.data()))
             .where((child) {
-          bool isInMonth = month == 0 || (child.bDay != null && child.bDay!.month == month);
+          bool isInMonth =
+              month == 0 || (child.bDay != null && child.bDay!.month == month);
 
           bool isAbsentOnDate = !child.att.any((attendanceDateInAtt) {
             return attendanceDateInAtt.year == attendanceDate.year &&
@@ -228,5 +230,43 @@ class FirebaseService {
     );
   }
 
+  //EVENT
+  static final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  static Future<void> addEvent({
+    required String name,
+    required double price,
+    required String location,
+    required String details,
+    required DateTime date,
+    required List<ChildData> children,
+  }) async {
+    try {
+      await firestore.collection("Event").add({
+        "name": name,
+        "price": price,
+        "location": location,
+        "details": details,
+        "date": date,
+        "child": [],
+      });
+    } catch (e) {
+      throw Exception("Error adding trip: $e");
+    }
+  }
+
+  static Future<List<EventModel>> getEvents() async {
+    try {
+      QuerySnapshot querySnapshot = await firestore
+          .collection("Event")
+          .orderBy("date", descending: false)
+          .get();
+
+      return querySnapshot.docs.map((doc) {
+        return EventModel.fromMap(doc.id, doc.data() as Map<String, dynamic>);
+      }).toList();
+    } catch (e) {
+      throw Exception("Error fetching events: $e");
+    }
+  }
 }

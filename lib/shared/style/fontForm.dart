@@ -23,8 +23,10 @@ class FontForm {
     fontSize: 20,
     color: ColorManager.scondeColor, // Replace with your actual color
   );
-
-
+  static TextStyle TextStyle20boldW = GoogleFonts.acme(
+    fontSize: 20,
+    color: Colors.white70, // Replace with your actual color
+  );
 }
 
 

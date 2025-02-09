@@ -1,26 +1,29 @@
-import 'package:church/shared/style/color_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../style/fontForm.dart';
 import 'custom_Phone.dart';
 
 class CustomCard extends StatelessWidget {
-  final String profileImage;
+  final String? profileImage;
   final String name;
-  final String phone;
+  final String? phone;
+  final int numCH;
   final String id;
   final IconData icon;
   final VoidCallback iconFunction;
+  final bool showImage;
+  final String? subtitleData;
 
   const CustomCard({
     super.key,
-    required this.profileImage,
+    this.numCH = 0,
+    this.profileImage,
     required this.name,
-    required this.phone,
+    this.phone,
     required this.id,
     required this.icon,
     required this.iconFunction,
+    this.showImage = true,
+    this.subtitleData,
   });
 
   @override
@@ -33,16 +36,32 @@ class CustomCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListTile(
-          leading: Image.asset(
-            profileImage,
-            width: 70,
-            height: 70,
-          ),
+          leading: showImage && profileImage != null && profileImage!.isNotEmpty
+              ? Image.network(
+                  profileImage!,
+                  width: 70,
+                  height: 70,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.person, size: 50);
+                  },
+                )
+              : CircleAvatar(
+                  radius: 25,
+                  child: Text(
+                    numCH > 0 ? "$numCH" : "-",
+                    style: FontForm.TextStyle30bold,
+                  ),
+                ),
           title: Text(
             name,
             style: FontForm.TextStyle30bold,
           ),
-          subtitle: customPhone(phone: phone),
+          subtitle: subtitleData != null
+              ? Text(subtitleData!, style: FontForm.TextStyle20bold)
+              : (phone != null && phone!.isNotEmpty
+                  ? customPhone(phone: phone!)
+                  : const SizedBox()),
           trailing: IconButton(
             onPressed: iconFunction,
             icon: Icon(

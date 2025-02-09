@@ -1,3 +1,4 @@
+import 'package:church/layout/events/eventsScreen.dart';
 import 'package:church/shared/dataApp.dart';
 import 'package:flutter/material.dart';
 
@@ -91,48 +92,64 @@ class _HomescreenState extends State<Homescreen> {
                     );
                   },
                 ),
-              CustomElevatedButton(
-                text: "الحضور",
-                OnPressed: () async {
-                  showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) => CustomShowDialog(
-                      title: 'gender . . .',
-                      frisIcon: Icons.girl_outlined,
-                      firstText: DataApp.genter[0],
-                      onFirstPressed: () async {
-                        selectedGender = "G";
-                        List<ChildData> children =
-                            await fetchChildrenData(selectedGender);
-                        Navigator.of(context).pop();
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => ChildrenallAtt(
-                              genter: selectedGender,
-                              childrenData: children,
-                            ),
-                          ),
-                        );
-                      },
-                      secIcon: Icons.boy_outlined,
-                      secondText: DataApp.genter[1],
-                      onSecondPressed: () async {
-                        selectedGender = "B";
-                        List<ChildData> children =
-                            await fetchChildrenData(selectedGender);
-                        Navigator.of(context).pop();
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => ChildrenallAtt(
-                              genter: selectedGender,
-                              childrenData: children,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  CustomElevatedButton(
+                    width: MediaQuery.of(context).size.width * 0.45,
+                    text: " أنشطة",
+                    OnPressed: () async {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => EventsScreen()),
+                      );
+                    },
+                  ), //رحلات
+                  CustomElevatedButton(
+                    width: MediaQuery.of(context).size.width * 0.45,
+                    text: "الحضور",
+                    OnPressed: () async {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => CustomShowDialog(
+                          title: 'gender . . .',
+                          frisIcon: Icons.girl_outlined,
+                          firstText: DataApp.genter[0],
+                          onFirstPressed: () async {
+                            selectedGender = "G";
+                            List<ChildData> children =
+                                await fetchChildrenData(selectedGender);
+                            Navigator.of(context).pop();
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ChildrenallAtt(
+                                  genter: selectedGender,
+                                  childrenData: children,
+                                ),
+                              ),
+                            );
+                          },
+                          secIcon: Icons.boy_outlined,
+                          secondText: DataApp.genter[1],
+                          onSecondPressed: () async {
+                            selectedGender = "B";
+                            List<ChildData> children =
+                                await fetchChildrenData(selectedGender);
+                            Navigator.of(context).pop();
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ChildrenallAtt(
+                                  genter: selectedGender,
+                                  childrenData: children,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ), //حضور
+                ],
               ),
             ],
           ),
