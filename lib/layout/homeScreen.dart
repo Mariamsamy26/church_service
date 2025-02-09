@@ -31,7 +31,7 @@ class _HomescreenState extends State<Homescreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppbarCom(
-        textAPP: 'المراحل',
+        textAPP: 'خدمه ثانوي ',
         iconApp: Icons.add,
         onPressedApp: () {
           Navigator.of(context).push(

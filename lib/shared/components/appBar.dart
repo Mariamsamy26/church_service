@@ -14,6 +14,16 @@ class AppbarCom extends StatelessWidget implements PreferredSizeWidget {
     this.onPressedApp,
   }) : super(key: key);
 
+  /*
+  SearchTextField(
+  controller: searchController,
+  onClear: () {
+    context.read<NewsLogic>().getNewsSearch(text: '');
+  },
+  hintText: '... اسم المخدوم ',
+),
+
+   */
   @override
   Widget build(BuildContext context) {
     return AppBar(
