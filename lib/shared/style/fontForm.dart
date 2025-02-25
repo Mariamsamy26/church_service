@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'color_manager.dart';
-
 class FontForm {
   static TextStyle TextStyle50bold = GoogleFonts.amiri(
     fontWeight: FontWeight.w400,

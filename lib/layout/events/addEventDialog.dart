@@ -59,7 +59,7 @@ class AddEventDialogState extends State<AddEventDialog> {
             ),
             const SizedBox(height: 10),
             buildTextField(
-                detailsController, "التفاصيل (اختياري)", Icons.description,
+                detailsController, "التفاصيل ", Icons.description,
                 isMultiline: true),
             const SizedBox(height: 20),
             Row(

@@ -5,6 +5,7 @@ import '../../shared/firebase/firebase_function.dart';
 import '../../shared/components/appBar.dart';
 import '../../shared/components/custom_Card.dart';
 import 'addEventDialog.dart';
+import 'camingScreen.dart';
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({Key? key}) : super(key: key);
@@ -55,7 +56,17 @@ class _EventsScreenState extends State<EventsScreen> {
                   subtitleData: formattedDate,
                   numCH: event.children.length,
                   icon: Icons.info,
-                  iconFunction: () {},
+                  iconFunction: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //   builder: (context) => CamingScreen(
+                    //     event: event,
+                    //     allChildren: FirebaseService().getAllChildren(),
+                    //   ),
+                    // ),
+                    // );
+                  },
                   showImage: false,
                   id: event.id,
                 );
