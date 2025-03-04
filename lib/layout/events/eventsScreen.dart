@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import '../../model/event.dart';
 import '../../shared/firebase/firebase_function.dart';
 import '../../shared/components/appBar.dart';
-import '../../shared/components/custom_Card.dart';
+import '../../shared/components/custom_CustomCardListTile.dart';
 import 'addEventDialog.dart';
 import 'camingScreen.dart';
 
@@ -51,7 +51,7 @@ class _EventsScreenState extends State<EventsScreen> {
                 EventModel event = events[index];
                 String formattedDate =
                     DateFormat('dd-MM-yyyy').format(event.date);
-                return CustomCard(
+                return CustomCardListTile(
                   name: event.name,
                   subtitleData: formattedDate,
                   numCH: event.children.length,

@@ -20,7 +20,10 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
   List<int> years = List.generate(50, (index) => DateTime.now().year - index);
 
   void _updateDate() {
-    final selectedDate = DateTime(selectedYear, selectedMonth, selectedDay);
+    final selectedDate = DateTime(
+        selectedYear ?? DateTime.now().year,
+        selectedMonth ?? DateTime.now().month,
+        selectedDay ?? DateTime.now().day);
     widget.onDateChanged(selectedDate);
   }
 

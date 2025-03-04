@@ -2,7 +2,7 @@ import 'package:church/shared/style/fontForm.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../model/child.dart';
-import '../../shared/components/custom_Card.dart';
+import '../../shared/components/custom_CustomCardListTile.dart';
 import '../../shared/style/color_manager.dart';
 import '../details/childDetailsScreen.dart';
 
@@ -104,7 +104,7 @@ class _ChildrenTrackState extends State<ChildrenTrack> {
                     itemCount: widget.childrenData!.length,
                     itemBuilder: (context, index) {
                       var child = widget.childrenData![index];
-                      return CustomCard(
+                      return CustomCardListTile(
                         profileImage: child.imgUrl.toString(),
                         name: child.name!,
                         phone: child.phone,

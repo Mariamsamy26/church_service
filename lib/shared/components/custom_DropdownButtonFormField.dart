@@ -45,7 +45,7 @@ class CustomDropdownButtonFormField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: ColorManager.primaryColor, // نفس اللون للبوردر عند التركيز
+                color: ColorManager.primaryColor,
                 width: 2,
               ),
               borderRadius: BorderRadius.circular(12.0),

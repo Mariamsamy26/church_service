@@ -3,7 +3,7 @@ import 'package:church/shared/style/fontForm.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../model/child.dart';
-import '../../shared/components/custom_Card.dart';
+import '../../shared/components/custom_CustomCardListTile.dart';
 import '../../shared/components/showCustomSnackbar.dart';
 import '../../shared/firebase/firebase_function.dart';
 
@@ -110,7 +110,7 @@ class _ChildrenAttState extends State<ChildrenAtt> {
                 var child = widget.childrenData?[index];
                 bool isSelected = attendanceSelection[child?.id ?? ""] ?? false;
 
-                return CustomCard(
+                return CustomCardListTile(
                   profileImage: child?.imgUrl ?? "",
                   name: child?.name ?? "Unknown",
                   phone: child?.phone ?? "Unknown",

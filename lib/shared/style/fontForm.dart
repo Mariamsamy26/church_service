@@ -6,25 +6,25 @@ class FontForm {
   static TextStyle TextStyle50bold = GoogleFonts.amiri(
     fontWeight: FontWeight.w400,
     fontSize: 50,
-    color: ColorManager.scondeColor, // Replace with your actual color
+    color: ColorManager.scondeColor,
   );
   static TextStyle TextStyle40bold = GoogleFonts.amiri(
     fontWeight: FontWeight.w400,
     fontSize: 40,
-    color: ColorManager.scondeColor, // Replace with your actual color
+    color: ColorManager.scondeColor,
   );
   static TextStyle TextStyle30bold = GoogleFonts.acme(
     fontWeight: FontWeight.w400,
     fontSize: 30,
-    color: ColorManager.scondeColor, // Replace with your actual color
+    color: ColorManager.scondeColor,
   );
   static TextStyle TextStyle20bold = GoogleFonts.acme(
     fontSize: 20,
-    color: ColorManager.scondeColor, // Replace with your actual color
+    color: ColorManager.scondeColor,
   );
   static TextStyle TextStyle20boldW = GoogleFonts.acme(
     fontSize: 20,
-    color: Colors.white70, // Replace with your actual color
+    color: Colors.white70,
   );
 }
 

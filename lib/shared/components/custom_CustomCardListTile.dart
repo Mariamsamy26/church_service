@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../style/fontForm.dart';
 import 'custom_Phone.dart';
 
-class CustomCard extends StatelessWidget {
+class CustomCardListTile extends StatelessWidget {
   final String? profileImage;
   final String name;
   final String? phone;
@@ -13,7 +13,7 @@ class CustomCard extends StatelessWidget {
   final bool showImage;
   final String? subtitleData;
 
-  const CustomCard({
+  const CustomCardListTile({
     super.key,
     this.numCH = 0,
     this.profileImage,

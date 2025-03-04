@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../model/child.dart';
-import 'custom_Card.dart';
+import 'custom_CustomCardListTile.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
   final List<ChildData> childrenData;
@@ -55,7 +55,7 @@ class CustomSearchDelegate extends SearchDelegate {
             var child = filteredChildren[index];
             bool isSelected = attendanceSelection[child.id ?? ""] ?? false;
 
-            return CustomCard(
+            return CustomCardListTile(
               profileImage: child.imgUrl ?? "",
               name: child.name ?? "Unknown",
               phone: child.phone ?? "Unknown",

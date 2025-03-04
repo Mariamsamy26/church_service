@@ -59,7 +59,7 @@ class AddEventDialogState extends State<AddEventDialog> {
             ),
             const SizedBox(height: 10),
             buildTextField(
-                detailsController, "التفاصيل ", Icons.description,
+                detailsController, "التفاصيل", Icons.description,
                 isMultiline: true),
             const SizedBox(height: 20),
             Row(
@@ -95,12 +95,8 @@ class AddEventDialogState extends State<AddEventDialog> {
   }
 
   Widget buildTextField(
-    TextEditingController controller,
-    String hint,
-    IconData icon, {
-    bool isNumber = false,
-    bool isMultiline = false,
-  }) {
+      TextEditingController controller, String hint, IconData icon,
+      {bool isNumber = false, bool isMultiline = false}) {
     return TextField(
       controller: controller,
       keyboardType: isNumber
@@ -122,23 +118,30 @@ class AddEventDialogState extends State<AddEventDialog> {
     String priceText = priceController.text.trim();
     String location = locationController.text.trim();
     String details = detailsController.text.trim();
+    double? price = double.tryParse(priceText);
 
-    if (name.isEmpty ||
-        priceText.isEmpty ||
-        location.isEmpty ||
-        selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("يجب ملء جميع الحقول الإلزامية واختيار التاريخ")),
-      );
+    if (name.isEmpty) {
+      showError("يجب إدخال الاسم");
       return;
     }
 
-    double? price = double.tryParse(priceText);
+    if (priceText.isEmpty) {
+      showError("يجب إدخال السعر");
+      return;
+    }
+
     if (price == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("يرجى إدخال سعر صالح")),
-      );
+      showError("يرجى إدخال سعر صالح");
+      return;
+    }
+
+    if (location.isEmpty) {
+      showError("يجب إدخال الموقع");
+      return;
+    }
+
+    if (selectedDate == null) {
+      showError("يجب اختيار التاريخ");
       return;
     }
 
@@ -152,5 +155,11 @@ class AddEventDialogState extends State<AddEventDialog> {
     );
 
     Navigator.pop(context, true);
+  }
+
+  void showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 }

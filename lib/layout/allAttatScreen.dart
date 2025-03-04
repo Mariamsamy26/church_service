@@ -4,7 +4,7 @@ import 'package:church/shared/style/color_manager.dart';
 import 'package:church/shared/style/fontForm.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../shared/components/custom_Card.dart';
+import '../../shared/components/custom_CustomCardListTile.dart';
 import '../../shared/components/showCustomSnackbar.dart';
 import '../../shared/firebase/firebase_function.dart';
 import '../shared/components/customSearchDelegate.dart';
@@ -153,7 +153,7 @@ class ChildrenallAttState extends State<ChildrenallAtt> {
               var child = filteredChildren[index];
               bool isSelected = attendanceSelection[child.id ?? ""] ?? false;
 
-              return CustomCard(
+              return CustomCardListTile(
                 profileImage: child.imgUrl ?? "",
                 name: child.name ?? "Unknown",
                 phone: child.phone ?? "Unknown",

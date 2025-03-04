@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../model/child.dart';
-import '../../shared/components/custom_Card.dart';
+import '../../shared/components/custom_CustomCardListTile.dart';
 import '../details/childDetailsScreen.dart';
 
 class ChildrenFind extends StatelessWidget {
@@ -18,7 +18,7 @@ class ChildrenFind extends StatelessWidget {
       itemCount: childrenData?.length,
       itemBuilder: (context, index) {
         var child = childrenData?[index];
-        return CustomCard(
+        return CustomCardListTile(
             profileImage: child!.imgUrl.toString(),
             name: child.name!,
             phone: child.phone,
