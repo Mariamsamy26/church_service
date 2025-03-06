@@ -65,8 +65,8 @@ class _EventsScreenState extends State<EventsScreen> {
                       subtitleData: formattedDate,
                       numCH: event.children.length,
                       icon: Icons.info,
-                      iconFunction: () {
-                        Navigator.push(
+                      iconFunction: () async {
+                        await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => SelectedToCamingScreen(
@@ -76,6 +76,7 @@ class _EventsScreenState extends State<EventsScreen> {
                             ),
                           ),
                         );
+                        loadEvents();
                       },
                       showImage: false,
                       id: event.id,
