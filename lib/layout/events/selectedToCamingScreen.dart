@@ -57,23 +57,20 @@ class SelectedToCamingScreenState extends State<SelectedToCamingScreen> {
     });
   }
 
-  void _toggleSelection(String childId) {
-    setState(() {
-      selectionMap[childId] = !(selectionMap[childId] ?? false);
-    });
-  }
-
   Future<void> _handleChildSelection(String childId) async {
     if (childId != null && widget.event.id != null) {
-      final result = await AddPaymentDialog.show(
-        context,
-        childId: childId,
-        eventId: widget.event.id,
-      );
-      if (result == true) {
-        setState(() {
-          _toggleSelection(childId);
-        });
+      // إذا كان الطفل غير محدد، نعرض Dialog ونحدده
+      if (!(selectionMap[childId] ?? false)) {
+        final result = await AddPaymentDialog.show(
+          context,
+          childId: childId,
+          eventId: widget.event.id,
+        );
+        if (result == true) {
+          setState(() {
+            selectionMap[childId] = true;
+          });
+        }
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
