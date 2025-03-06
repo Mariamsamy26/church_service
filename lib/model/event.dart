@@ -1,5 +1,5 @@
+import 'package:church/model/childEvent.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'child.dart';
 
 class EventModel {
   final String id;
@@ -8,7 +8,7 @@ class EventModel {
   final String location;
   final String details;
   final DateTime date;
-  final List<ChildData> children;
+  final List<ChildEvent> children;
 
   EventModel({
     required this.id,
@@ -20,24 +20,26 @@ class EventModel {
     required this.children,
   });
 
-  // تحويل من Map إلى كائن EventModel
+  // من Map إلى EventModel
   factory EventModel.fromMap(String id, Map<String, dynamic> data) {
     return EventModel(
       id: id,
       name: data["name"] ?? "",
-      price: (data["price"] as num).toDouble(),
+      price: (data["price"] as num?)?.toDouble() ?? 0.0,
       location: data["location"] ?? "",
       details: data["details"] ?? "",
       date: data["date"] is Timestamp
           ? (data["date"] as Timestamp).toDate()
           : DateTime.tryParse(data["date"].toString()) ?? DateTime.now(),
-      children: (data["child"] as List<dynamic>?)?.map((child) {
-            return ChildData.fromJson(child as Map<String, dynamic>);
-          }).toList() ??
-          [],
+      children: (data["children"] is List)
+          ? (data["children"] as List<dynamic>)
+              .map((child) => ChildEvent.fromJson(child))
+              .toList()
+          : [],
     );
   }
 
+  // من EventModel إلى Map
   Map<String, dynamic> toMap() {
     return {
       "name": name,
@@ -45,7 +47,7 @@ class EventModel {
       "location": location,
       "details": details,
       "date": Timestamp.fromDate(date),
-      "child": children.map((child) => child.toJson()).toList(),
+      "children": children.map((child) => child.toJson()).toList(),
     };
   }
 }

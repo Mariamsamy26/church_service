@@ -1,7 +1,7 @@
 import 'package:church/shared/style/color_manager.dart';
 import 'package:church/shared/style/fontForm.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // لاستيراد مكتبة التحكم بالإدخال
+import 'package:flutter/services.dart';
 
 class AppTextFormField extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
@@ -19,7 +19,7 @@ class AppTextFormField extends StatelessWidget {
   final Function(String?) validator;
   final bool readOnly;
   final TextInputType? keyboardType;
-  final List<TextInputFormatter>? inputFormatters; // إضافة فورماتر الإدخال
+  final List<TextInputFormatter>? inputFormatters;
 
   const AppTextFormField({
     super.key,
@@ -38,7 +38,7 @@ class AppTextFormField extends StatelessWidget {
     required this.label,
     this.readOnly = false,
     this.keyboardType,
-    this.inputFormatters, // إضافة فورماتر الإدخال
+    this.inputFormatters,
   });
 
   @override
@@ -96,7 +96,7 @@ class AppTextFormField extends StatelessWidget {
         return validator(value);
       },
       keyboardType: keyboardType,
-      inputFormatters: inputFormatters, // تعيين فورماتر الإدخال
+      inputFormatters: inputFormatters,
     );
   }
 }

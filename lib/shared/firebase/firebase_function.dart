@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
+import '../../model/PaymentInstallment.dart';
 import '../../model/child.dart';
+import '../../model/childEvent.dart';
 import '../../model/event.dart';
 
 class FirebaseService {
@@ -86,60 +88,62 @@ class FirebaseService {
       levels.map((level) {
         String collectionName = 'Level_${level}_$gender';
         return _firestore.collection(collectionName).snapshots().map(
-              (querySnapshot) =>
-              querySnapshot.docs
+              (querySnapshot) => querySnapshot.docs
                   .map((doc) => ChildData.fromJson(doc.data()))
                   .where((child) => child.name != null)
                   .toList(),
-        );
+            );
       }),
     ).map((listOfLists) {
       var children = listOfLists.expand((list) => list).toList();
 
       children.sort(
-              (a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+          (a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
       return children;
     });
   }
 
   Stream<List<ChildData>> getAllChildren() {
     List<int> levels = [1, 2, 3];
-    List<String> gender = ["G", "B"];
+    List<String> genders = ["G", "B"];
 
     return Rx.combineLatestList(
-      levels.map((level) {
-        String collectionName = 'Level_${level}_$gender';
-        return _firestore.collection(collectionName).snapshots().map(
-              (querySnapshot) =>
-              querySnapshot.docs
-                  .map((doc) => ChildData.fromJson(doc.data()))
-                  .where((child) => child.name != null)
-                  .toList(),
-        );
-      }),
+      levels
+          .map((level) {
+            return genders.map((gender) {
+              String collectionName = 'Level_${level}_$gender';
+              return _firestore.collection(collectionName).snapshots().map(
+                    (querySnapshot) => querySnapshot.docs
+                        .map((doc) => ChildData.fromJson(doc.data()))
+                        .where((child) => child.name != null)
+                        .toList(),
+                  );
+            }).toList();
+          })
+          .expand((list) => list)
+          .toList(),
     ).map((listOfLists) {
       var children = listOfLists.expand((list) => list).toList();
 
       children.sort(
-              (a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+          (a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
       return children;
     });
   }
 
   // Get children by level and gender
-  Stream<List<ChildData>> getChildrenByLevelAndGender(int level,
-      String gender) {
+  Stream<List<ChildData>> getChildrenByLevelAndGender(
+      int level, String gender) {
     String collectionName = 'Level_${level}_$gender';
     return _firestore.collection(collectionName).snapshots().map(
-          (querySnapshot) {
+      (querySnapshot) {
         var children = querySnapshot.docs
             .map((doc) => ChildData.fromJson(doc.data()))
             .where((child) => child.name != null)
             .toList();
 
         children.sort(
-                (a, b) =>
-                a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+            (a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
         return children;
       },
     );
@@ -192,8 +196,8 @@ class FirebaseService {
         var data = docSnapshot.data() as Map<String, dynamic>;
         List<DateTime> currentAttendance = data['att'] != null
             ? (data['att'] as List)
-            .map((e) => (e as Timestamp).toDate())
-            .toList()
+                .map((e) => (e as Timestamp).toDate())
+                .toList()
             : [];
 
         if (state) {
@@ -218,9 +222,7 @@ class FirebaseService {
         });
 
         print(
-            "Attendance ${state
-                ? 'added'
-                : 'removed'} for $childId on ${attendanceDate.toLocal()}");
+            "Attendance ${state ? 'added' : 'removed'} for $childId on ${attendanceDate.toLocal()}");
       } else {
         print("Child document with ID $childId does not exist.");
       }
@@ -267,7 +269,7 @@ class FirebaseService {
     required String location,
     required String details,
     required DateTime date,
-    required List<ChildData> children,
+    required List<ChildEvent> children,
   }) async {
     try {
       await firestore.collection("Event").add({
@@ -276,11 +278,114 @@ class FirebaseService {
         "location": location,
         "details": details,
         "date": date,
-        "child": [],
+        "children": children.map((child) => child.toJson()).toList(),
       });
     } catch (e) {
-      throw Exception("Error adding trip: $e");
+      throw Exception("Error adding event: $e");
     }
+  }
+
+  static Future<void> updateEventPayment({
+    required String eventId,
+    required String childId,
+    required String namebasoon,
+    required double amountPaid,
+    required DateTime paymentDate,
+    required double remainingAmount, // إضافة remainingAmount
+  }) async {
+    try {
+      double totalPrice = await getPriceByEventId(eventId);
+      double totalPaid = await getTotalPaid(eventId, childId);
+
+      final paymentInstallment = PaymentInstallment(
+        amountPaid: amountPaid,
+        remainingAmount: remainingAmount,
+        paymentDate: paymentDate,
+        namebasoon: namebasoon,
+      );
+
+      DocumentSnapshot eventSnapshot =
+          await firestore.collection("Event").doc(eventId).get();
+
+      if (eventSnapshot.exists) {
+        var children = eventSnapshot['children'];
+        var childIndex =
+            children.indexWhere((child) => child['childId'] == childId);
+
+        if (childIndex != -1) {
+          var child = children[childIndex];
+          ChildEvent childEvent = ChildEvent.fromJson(child);
+          childEvent.installments.add(paymentInstallment);
+          children[childIndex] = childEvent.toJson();
+
+          await firestore.collection("Event").doc(eventId).update({
+            "children": children,
+          });
+        } else {
+          ChildEvent newChildEvent = ChildEvent(
+            childId: childId,
+            installments: [paymentInstallment],
+            totalPrice: totalPrice,
+          );
+          children.add(newChildEvent.toJson());
+
+          await firestore.collection("Event").doc(eventId).update({
+            "children": children,
+          });
+        }
+      }
+    } catch (e) {
+      throw Exception("Error updating event payment: $e");
+    }
+  }
+
+  static Future<double> getTotalPaid(String eventId, String childId) async {
+    double totalPaid = 0.0;
+    try {
+      DocumentSnapshot eventSnapshot =
+          await firestore.collection("Event").doc(eventId).get();
+
+      if (eventSnapshot.exists) {
+        var children = eventSnapshot['children'];
+        var child = children.firstWhere(
+          (child) => child['childId'] == childId,
+          orElse: () => null,
+        );
+
+        if (child != null) {
+          List<dynamic> installments = child['installments'] ?? [];
+          totalPaid = installments.fold(
+            0.0,
+            (sum, item) => sum + (item['amountPaid'] as double),
+          );
+        }
+      }
+    } catch (e) {
+      throw Exception("Error fetching total paid: $e");
+    }
+    return totalPaid;
+  }
+
+  static double getRemainingAmount(
+      {required double totalPaid,
+      required double totalPrice,
+      required double amountPaid}) {
+    double remainingAmount = totalPrice - (totalPaid + amountPaid);
+    return remainingAmount;
+  }
+
+  static Future<double> getPriceByEventId(String eventId) async {
+    try {
+      DocumentSnapshot eventSnapshot =
+          await firestore.collection("Event").doc(eventId).get();
+
+      if (eventSnapshot.exists) {
+        return eventSnapshot['price'] ?? 0.0;
+      }
+    } catch (e) {
+      throw Exception("Error fetching price: $e");
+    }
+    return 0.0;
   }
 
   static Future<List<EventModel>> getEvents() async {
@@ -295,35 +400,6 @@ class FirebaseService {
       }).toList();
     } catch (e) {
       throw Exception("Error fetching events: $e");
-    }
-  }
-
-  static Future<EventModel?> getEventById(String eventId) async {
-    try {
-      DocumentSnapshot doc = await firestore.collection("Event")
-          .doc(eventId)
-          .get();
-      if (doc.exists) {
-        return EventModel.fromMap(doc.id, doc.data() as Map<String, dynamic>);
-      } else {
-        return null;
-      }
-    } catch (e) {
-      throw Exception("Error fetching event: $e");
-    }
-  }
-
-  static Future<void> addChildrenToTrip(String tripDate,
-      List<Map<String, dynamic>> children) async {
-    try {
-      DocumentReference tripRef = firestore.collection("Trips").doc(tripDate);
-
-      await tripRef.set({
-        "date": tripDate,
-        "children": FieldValue.arrayUnion(children), // إضافة الأطفال للمصفوفة
-      }, SetOptions(merge: true));
-    } catch (e) {
-      throw Exception("Error adding children to trip: $e");
     }
   }
 }

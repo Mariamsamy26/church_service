@@ -5,7 +5,7 @@ import '../../shared/firebase/firebase_function.dart';
 import '../../shared/components/appBar.dart';
 import '../../shared/components/custom_CustomCardListTile.dart';
 import 'addEventDialog.dart';
-import 'camingScreen.dart';
+import 'selectedToCamingScreen.dart';
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({Key? key}) : super(key: key);
@@ -16,6 +16,7 @@ class EventsScreen extends StatefulWidget {
 
 class _EventsScreenState extends State<EventsScreen> {
   List<EventModel> events = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -24,10 +25,16 @@ class _EventsScreenState extends State<EventsScreen> {
   }
 
   Future<void> loadEvents() async {
-    List<EventModel> fetchedEvents = await FirebaseService.getEvents();
-    setState(() {
-      events = fetchedEvents;
-    });
+    try {
+      List<EventModel> fetchedEvents = await FirebaseService.getEvents();
+      setState(() {
+        events = fetchedEvents;
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading events: $e');
+      isLoading = false;
+    }
   }
 
   @override
@@ -43,35 +50,38 @@ class _EventsScreenState extends State<EventsScreen> {
           }
         },
       ),
-      body: events.isEmpty
-          ? const Center(child: Text("لا توجد أحداث متاحة"))
-          : ListView.builder(
-              itemCount: events.length,
-              itemBuilder: (context, index) {
-                EventModel event = events[index];
-                String formattedDate =
-                    DateFormat('dd-MM-yyyy').format(event.date);
-                return CustomCardListTile(
-                  name: event.name,
-                  subtitleData: formattedDate,
-                  numCH: event.children.length,
-                  icon: Icons.info,
-                  iconFunction: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //   builder: (context) => CamingScreen(
-                    //     event: event,
-                    //     allChildren: FirebaseService().getAllChildren(),
-                    //   ),
-                    // ),
-                    // );
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : events.isEmpty
+              ? const Center(child: Text("لا توجد أحداث متاحة"))
+              : ListView.builder(
+                  itemCount: events.length,
+                  itemBuilder: (context, index) {
+                    EventModel event = events[index];
+                    String formattedDate =
+                        DateFormat('dd-MM-yyyy').format(event.date);
+                    return CustomCardListTile(
+                      name: event.name,
+                      subtitleData: formattedDate,
+                      numCH: event.children.length,
+                      icon: Icons.info,
+                      iconFunction: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SelectedToCamingScreen(
+                              event: event,
+                              allChildrenStream:
+                                  FirebaseService().getAllChildren(),
+                            ),
+                          ),
+                        );
+                      },
+                      showImage: false,
+                      id: event.id,
+                    );
                   },
-                  showImage: false,
-                  id: event.id,
-                );
-              },
-            ),
+                ),
     );
   }
 }
