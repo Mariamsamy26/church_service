@@ -59,13 +59,21 @@ class SelectedToCamingScreenState extends State<SelectedToCamingScreen> {
 
   Future<void> _handleChildSelection(String childId) async {
     if (childId != null && widget.event.id != null) {
-      // إذا كان الطفل غير محدد، نعرض Dialog ونحدده
+      // Find the child in the filteredChildren list
+      var child = filteredChildren.firstWhere(
+        (child) => child.id == childId,
+      );
+
       if (!(selectionMap[childId] ?? false)) {
         final result = await AddPaymentDialog.show(
           context,
           childId: childId,
           eventId: widget.event.id,
+          childNAME: child.name ?? "غير معروف",
+          childPhone: child.phone ?? "غير معروف",
+          level: child.level ?? 0,
         );
+
         if (result == true) {
           setState(() {
             selectionMap[childId] = true;

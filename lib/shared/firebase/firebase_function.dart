@@ -136,7 +136,7 @@ class FirebaseService {
       int level, String gender) {
     String collectionName = 'Level_${level}_$gender';
     return _firestore.collection(collectionName).snapshots().map(
-      (querySnapshot) {
+          (querySnapshot) {
         var children = querySnapshot.docs
             .map((doc) => ChildData.fromJson(doc.data()))
             .where((child) => child.name != null)
@@ -288,10 +288,13 @@ class FirebaseService {
   static Future<void> updateEventPayment({
     required String eventId,
     required String childId,
+    required String childNAME,
+    required String childPhone,
     required String namebasoon,
     required double amountPaid,
     required DateTime paymentDate,
-    required double remainingAmount, // إضافة remainingAmount
+    required double remainingAmount,
+    required int level,
   }) async {
     try {
       double totalPrice = await getPriceByEventId(eventId);
@@ -324,8 +327,11 @@ class FirebaseService {
         } else {
           ChildEvent newChildEvent = ChildEvent(
             childId: childId,
-            installments: [paymentInstallment],
+            childNAME: childNAME,
+            childphone: childPhone,
+            level: level,
             totalPrice: totalPrice,
+            installments: [paymentInstallment],
           );
           children.add(newChildEvent.toJson());
 
@@ -336,6 +342,28 @@ class FirebaseService {
       }
     } catch (e) {
       throw Exception("Error updating event payment: $e");
+    }
+  }
+
+  static Future<List<ChildEvent>> getChildrenInEvent(String eventId) async {
+    try {
+      DocumentSnapshot eventSnapshot =
+          await firestore.collection("Event").doc(eventId).get();
+
+      if (eventSnapshot.exists) {
+        Map<String, dynamic> eventData =
+            eventSnapshot.data() as Map<String, dynamic>;
+        List<dynamic> childrenData = eventData['children'];
+        List<ChildEvent> children = childrenData
+            .map((childJson) => ChildEvent.fromJson(childJson))
+            .toList();
+
+        return children;
+      } else {
+        throw Exception("Event not found");
+      }
+    } catch (e) {
+      throw Exception("Error fetching children: $e");
     }
   }
 

@@ -6,19 +6,29 @@ import '../../shared/style/fontForm.dart';
 
 class AddPaymentDialog extends StatefulWidget {
   final String childId;
+  final String childNAME;
+  final String childphone;
+  final int level;
   final String eventId;
 
   const AddPaymentDialog({
     Key? key,
     required this.childId,
     required this.eventId,
+    required this.childphone,
+    required this.childNAME,
+    required this.level,
   }) : super(key: key);
 
   @override
   State<AddPaymentDialog> createState() => AddPaymentDialogState();
 
   static Future<bool?> show(BuildContext context,
-      {required String childId, required String eventId}) {
+      {required String childId,
+      required String eventId,
+      required String childNAME,
+      required String childPhone,
+      required int level}) {
     return showDialog<bool>(
       context: context,
       barrierDismissible: true,
@@ -26,6 +36,9 @@ class AddPaymentDialog extends StatefulWidget {
         return AddPaymentDialog(
           childId: childId,
           eventId: eventId,
+          childphone: childPhone,
+          childNAME: childNAME,
+          level: level,
         );
       },
     );
@@ -150,7 +163,10 @@ class AddPaymentDialogState extends State<AddPaymentDialog> {
         namebasoon: namebasoonController.text,
         amountPaid: amountPaid,
         paymentDate: selectedDate,
-        remainingAmount: remainingAmount, // تم إضافة remainingAmount
+        remainingAmount: remainingAmount,
+        childNAME: widget.childNAME,
+        level: widget.level,
+        childPhone: widget.childphone,
       );
 
       Navigator.pop(context, true);

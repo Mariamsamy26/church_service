@@ -6,7 +6,7 @@ class CustomCardListTile extends StatelessWidget {
   final String? profileImage;
   final String name;
   final String? phone;
-  final int numCH;
+  final dynamic numCH;
   final String id;
   final IconData icon;
   final VoidCallback iconFunction;
@@ -46,8 +46,12 @@ class CustomCardListTile extends StatelessWidget {
                     return const Icon(Icons.person, size: 50);
                   },
                 )
-              : CircleAvatar(
-                  radius: 25,
+              : Container(
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey.shade100,
+                    borderRadius: BorderRadius.circular(10), // تحديد نصف القطر
+                  ),
                   child: Text(
                     numCH > 0 ? "$numCH" : "-",
                     style: FontForm.TextStyle30bold,
