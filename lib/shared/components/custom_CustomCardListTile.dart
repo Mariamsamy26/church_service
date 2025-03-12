@@ -37,20 +37,15 @@ class CustomCardListTile extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: ListTile(
           leading: showImage && profileImage != null && profileImage!.isNotEmpty
-              ? Image.network(
+              ? Image.asset(
                   profileImage!,
-                  width: 70,
-                  height: 70,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.person, size: 50);
-                  },
                 )
               : Container(
                   padding: EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     color: Colors.blueGrey.shade100,
-                    borderRadius: BorderRadius.circular(10), // تحديد نصف القطر
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
                     numCH > 0 ? "$numCH" : "-",
