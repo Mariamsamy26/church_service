@@ -81,9 +81,10 @@ class _EventsScreenState extends State<EventsScreen> {
                               secondText: 'الي جاي ',
                               frisIcon: Icons.group_add_rounded,
                               secIcon: Icons.group,
-                              onFirstPressed: () {
+                              onFirstPressed: () async {
                                 Navigator.pop(context);
-                                Navigator.push(
+                                // الانتظار حتى تنتهي العملية في SelectedToCamingScreen
+                                await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
@@ -94,6 +95,7 @@ class _EventsScreenState extends State<EventsScreen> {
                                     ),
                                   ),
                                 );
+                                loadEvents();
                               },
                               onSecondPressed: () async {
                                 Navigator.pop(context);
