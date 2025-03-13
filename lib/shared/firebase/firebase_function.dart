@@ -367,6 +367,37 @@ class FirebaseService {
     }
   }
 
+  static Future<ChildEvent> getChildInEvent({
+    required String eventId,
+    required String childId,
+  }) async {
+    try {
+      DocumentSnapshot eventSnapshot =
+          await firestore.collection("Event").doc(eventId).get();
+
+      if (eventSnapshot.exists) {
+        Map<String, dynamic> eventData =
+            eventSnapshot.data() as Map<String, dynamic>;
+        List<dynamic> childrenData = eventData['children'] ?? [];
+
+        var childJson = childrenData.firstWhere(
+          (child) => child['childId'] == childId,
+          orElse: () => null,
+        );
+
+        if (childJson != null) {
+          return ChildEvent.fromJson(childJson);
+        } else {
+          throw Exception("Child not found in event");
+        }
+      } else {
+        throw Exception("Event not found");
+      }
+    } catch (e) {
+      throw Exception("Error fetching child: $e");
+    }
+  }
+
   static Future<double> getTotalPaid(String eventId, String childId) async {
     double totalPaid = 0.0;
     try {

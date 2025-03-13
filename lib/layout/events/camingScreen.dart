@@ -6,6 +6,7 @@ import '../../shared/components/customSearchDelegate.dart';
 import '../../shared/components/custom_CustomCardListTile.dart';
 import '../../shared/firebase/firebase_function.dart';
 import 'addPaynentDialog.dart';
+import 'childDetailsEventScreen.dart';
 
 class CamingScreen extends StatefulWidget {
   final EventModel event;
@@ -141,20 +142,37 @@ class CamingScreenState extends State<CamingScreen> {
                 double remainingAmount =
                     remainingAmountMap[child.childId ?? ""] ?? 0.0;
 
-                return CustomCardListTile(
-                  numCH: remainingAmount,
-                  name: child.childNAME ?? "غير معروف",
-                  phone: child.childphone ?? "غير معروف",
-                  id: child.childId ?? "N/A",
-                  icon: Icons.add_box_sharp,
-                  iconFunction: () async {
-                    await _handleChildSelection(
-                      child.childId ?? "",
-                      child.childNAME ?? "",
-                      child.childphone ?? "",
-                      child.level ?? 0,
+                return InkWell(
+                  onTap: () async {
+                    ChildEvent childEvent =
+                        await FirebaseService.getChildInEvent(
+                      eventId: widget.event.id,
+                      childId: child.childId,
+                    );
+                    if (!mounted) return;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (c) =>
+                            ChildDetailsEventScreen(childEvent: childEvent),
+                      ),
                     );
                   },
+                  child: CustomCardListTile(
+                    numCH: remainingAmount,
+                    name: child.childNAME ?? "غير معروف",
+                    phone: child.childphone ?? "غير معروف",
+                    id: child.childId ?? "N/A",
+                    icon: Icons.add_box_sharp,
+                    iconFunction: () async {
+                      await _handleChildSelection(
+                        child.childId ?? "",
+                        child.childNAME ?? "",
+                        child.childphone ?? "",
+                        child.level ?? 0,
+                      );
+                    },
+                  ),
                 );
               },
             ),

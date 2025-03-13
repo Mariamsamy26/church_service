@@ -4,13 +4,13 @@ import '../style/fontForm.dart';
 
 class AppbarCom extends StatelessWidget implements PreferredSizeWidget {
   final String textAPP;
-  final IconData iconApp;
+  final IconData? iconApp;
   final VoidCallback? onPressedApp;
 
   const AppbarCom({
     Key? key,
     required this.textAPP,
-    required this.iconApp,
+    this.iconApp,
     this.onPressedApp,
   }) : super(key: key);
 
