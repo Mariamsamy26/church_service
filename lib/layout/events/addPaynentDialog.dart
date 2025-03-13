@@ -49,6 +49,7 @@ class AddPaymentDialogState extends State<AddPaymentDialog> {
   final TextEditingController namebasoonController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   DateTime selectedDate = DateTime.now();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +81,8 @@ class AddPaymentDialogState extends State<AddPaymentDialog> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 OutlinedButton(
-                  onPressed: () => Navigator.pop(context, false),
+                  onPressed:
+                      isLoading ? null : () => Navigator.pop(context, false),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: ColorManager.primaryColor,
                     backgroundColor: Colors.white70,
@@ -90,15 +92,19 @@ class AddPaymentDialogState extends State<AddPaymentDialog> {
                 ),
                 const SizedBox(width: 20),
                 ElevatedButton(
-                  onPressed: savePayment,
+                  onPressed: isLoading ? null : savePayment,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ColorManager.primaryColor,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 10),
                   ),
-                  child: Text("حفظ",
-                      style: FontForm.TextStyle20bold.copyWith(
-                          color: Colors.white70)),
+                  child: isLoading
+                      ? const CircularProgressIndicator(
+                          color: Colors.white70,
+                        ) // مؤشر التحميل
+                      : Text("حفظ",
+                          style: FontForm.TextStyle20bold.copyWith(
+                              color: Colors.white70)),
                 ),
               ],
             ),
@@ -128,24 +134,34 @@ class AddPaymentDialogState extends State<AddPaymentDialog> {
   }
 
   void savePayment() async {
+    setState(() {
+      isLoading = true;
+    });
+
     String priceText = priceController.text.trim();
     double? amountPaid = double.tryParse(priceText);
 
     if (priceText.isEmpty || amountPaid == null) {
       showError("يجب إدخال مبلغ صالح");
+      setState(() {
+        isLoading = false;
+      });
       return;
     }
 
     if (widget.eventId.isEmpty || widget.childId.isEmpty) {
       showError("حدث خطأ في البيانات المطلوبة");
+      setState(() {
+        isLoading = false;
+      });
       return;
     }
 
     try {
       double totalPrice =
-          await FirebaseService.getPriceByEventId(widget.eventId);
+      await FirebaseService.getPriceByEventId(widget.eventId);
       double totalPaid =
-          await FirebaseService.getTotalPaid(widget.eventId, widget.childId);
+      await FirebaseService.getTotalPaid(widget.eventId, widget.childId);
       double remainingAmount = FirebaseService.getRemainingAmount(
         amountPaid: amountPaid,
         totalPaid: totalPaid,
@@ -154,6 +170,9 @@ class AddPaymentDialogState extends State<AddPaymentDialog> {
 
       if (remainingAmount < 0) {
         showError("في زياده ${remainingAmount.abs()} جنيه");
+        setState(() {
+          isLoading = false;
+        });
         return;
       }
 
@@ -169,10 +188,16 @@ class AddPaymentDialogState extends State<AddPaymentDialog> {
         childPhone: widget.childphone,
       );
 
+      setState(() {
+        isLoading = false;
+      });
+
       Navigator.pop(context, true);
     } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
       showError("حدث خطأ أثناء حفظ الدفعة: $e");
-      print("حدث خطأ أثناء حفظ الدفعة: $e");
     }
   }
 
